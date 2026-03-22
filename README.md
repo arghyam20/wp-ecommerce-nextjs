@@ -1,36 +1,137 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🛒 WP Ecommerce — Next.js + WooCommerce
+
+A full-stack ecommerce storefront built with **Next.js 16**, **WooCommerce REST API**, **MUI**, and **NextAuth.js**.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router, Turbopack) |
+| Styling | Tailwind CSS v4 + SCSS + MUI v7 |
+| Auth | NextAuth.js v4 (JWT + WooCommerce JWT) |
+| State | Redux Toolkit + Zustand + React Context |
+| Forms | React Hook Form + Joi validation |
+| HTTP | Axios |
+| Backend | WordPress + WooCommerce REST API (wc/v3) |
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/                  # Next.js App Router pages & API routes
+│   ├── api/              # REST API handlers (auth, cart, checkout, user)
+│   ├── products/         # Product listing & detail pages
+│   ├── cart/             # Cart page
+│   ├── checkout/         # Checkout page
+│   └── dashboard/        # User dashboard (profile, orders, password)
+├── components/           # Reusable UI components
+├── context/              # CartContext
+├── hooks/                # useProducts, useProduct
+├── lib/                  # WooCommerce client, auth config, validation
+├── store/                # Redux store & slices
+├── styles/               # globals.scss
+└── types/                # TypeScript types
+```
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- WordPress with WooCommerce installed and REST API enabled
+- [JWT Authentication for WP REST API](https://wordpress.org/plugins/jwt-authentication-for-wp-rest-api/) plugin
+- [BD Better Password Reset](https://wordpress.org/plugins/bdvs-password-reset/) plugin (for password reset)
+
+### 1. Clone & Install
+
+```bash
+git clone <repo-url>
+cd wp-ecommerce-nextjs
+npm install
+```
+
+### 2. Environment Variables
+
+Create a `.env.local` file in the root:
+
+```env
+# WooCommerce API
+WOOCOMMERCE_URL=http://localhost/your-wp-site
+WOOCOMMERCE_CONSUMER_KEY=ck_xxxxxxxxxxxxxxxxxxxx
+WOOCOMMERCE_CONSUMER_SECRET=cs_xxxxxxxxxxxxxxxxxxxx
+
+# NextAuth
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=<generate-with-openssl-rand-base64-32>
+
+# JWT
+JWT_SECRET=<your-jwt-secret>
+```
+
+### 3. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Available Scripts
 
-## Learn More
+```bash
+npm run dev        # Start dev server (Turbopack)
+npm run build      # Production build
+npm run start      # Start production server
+npm run lint       # Run ESLint
+npm run lint:fix   # Run ESLint with auto-fix
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🛍️ Product listing with search, sort & pagination
+- 🔍 Product detail page with variations & attributes
+- 🛒 Cart management (add, remove, update quantity)
+- 💳 Checkout with form validation
+- 🔐 Authentication (login, register, forgot/reset password)
+- 👤 User dashboard (profile, orders, change password)
+- 🎨 MUI + Tailwind CSS + SCSS styling
+- ⚡ Turbopack for fast dev builds
+- 🔒 JWT-based session management
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## API Routes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Method | Route | Description |
+|---|---|---|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/forgot-password` | Send reset email |
+| POST | `/api/auth/reset-password` | Reset password with code |
+| GET/PUT | `/api/user/profile` | Get / update profile |
+| POST | `/api/user/change-password` | Change password |
+| GET | `/api/user/orders` | Get user orders |
+| GET/POST/DELETE | `/api/cart` | Cart operations |
+| POST | `/api/checkout` | Place order |
+| GET | `/api/products` | List products |
+| GET | `/api/products/[slug]` | Get product by slug |
+
+---
+
+## Deployment
+
+```bash
+npm run build
+npm run start
+```
+
+For cloud deployment, set all environment variables on your hosting platform and ensure your WordPress instance is publicly accessible.
