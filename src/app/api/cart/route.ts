@@ -17,42 +17,17 @@ export async function GET() {
   }
 }
 
-import { NextRequest, NextResponse } from "next/server";
-
 export async function POST(req: NextRequest) {
+  const { productId, quantity, variation } = await req.json();
   try {
-    const { productId, quantity, variation } = await req.json();
-
-    const response = await fetch(
-      `${process.env.WOOCOMMERCE_URL}/wp-json/wc/store/cart/add-item`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: productId,
-          quantity: quantity || 1,
-          variation: variation || [],
-        }),
-        credentials: "include", // ⚠️ IMPORTANT
-      }
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.log("STORE API ERROR:", data);
-      return NextResponse.json(data, { status: 500 });
+    const { data } = await WooCommerce.post('cart/add', { product_id: productId, quantity, variation });
+    const res = NextResponse.json(data);
+    if (data.cart_token) {
+      res.cookies.set('woocommerce_cart', data.cart_token, { httpOnly: true, path: '/' });
     }
-
-    return NextResponse.json(data);
-  } catch (err) {
-    console.log("CART ERROR:", err);
-    return NextResponse.json(
-      { message: "Failed to add item to cart" },
-      { status: 500 }
-    );
+    return res;
+  } catch {
+    return NextResponse.json({ message: 'Failed to add item to cart' }, { status: 500 });
   }
 }
 
