@@ -17,6 +17,23 @@ export async function GET() {
       lastName: data.last_name,
       username: data.username,
       avatarUrl: data.avatar_url,
+      billing: {
+        address1: data.billing?.address_1 ?? '',
+        address2: data.billing?.address_2 ?? '',
+        city: data.billing?.city ?? '',
+        state: data.billing?.state ?? '',
+        postcode: data.billing?.postcode ?? '',
+        country: data.billing?.country ?? '',
+        phone: data.billing?.phone ?? '',
+      },
+      shipping: {
+        address1: data.shipping?.address_1 ?? '',
+        address2: data.shipping?.address_2 ?? '',
+        city: data.shipping?.city ?? '',
+        state: data.shipping?.state ?? '',
+        postcode: data.shipping?.postcode ?? '',
+        country: data.shipping?.country ?? '',
+      },
     });
   } catch {
     return NextResponse.json({ message: 'Failed to fetch profile' }, { status: 500 });

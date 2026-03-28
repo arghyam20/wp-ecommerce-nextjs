@@ -1,7 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Cart } from '@/types';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import { Cart, CartItem } from '@/types';
 
 interface CartState {
   cart: Cart | null;
@@ -15,34 +13,93 @@ const initialState: CartState = {
   fetched: false,
 };
 
+const CART_KEY = 'wp_cart';
+
+function loadCart(): Cart {
+  if (typeof window === 'undefined') return emptyCart();
+  try {
+    const stored = localStorage.getItem(CART_KEY);
+    return stored ? JSON.parse(stored) : emptyCart();
+  } catch {
+    return emptyCart();
+  }
+}
+
+function saveCart(cart: Cart) {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  }
+}
+
+function emptyCart(): Cart {
+  return { items: [], total: '0.00', subtotal: '0.00', currency: 'USD', item_count: 0 };
+}
+
+function recalculate(items: CartItem[]): Cart {
+  const subtotal = items.reduce((sum, i) => sum + parseFloat(i.price) * i.quantity, 0);
+  return {
+    items,
+    subtotal: subtotal.toFixed(2),
+    total: subtotal.toFixed(2),
+    currency: 'USD',
+    item_count: items.reduce((sum, i) => sum + i.quantity, 0),
+  };
+}
+
 export const fetchCart = createAsyncThunk('cart/fetch', async () => {
-  const { data } = await axios.get('/api/cart');
-  return data as Cart;
+  return loadCart();
 });
 
 export const addToCart = createAsyncThunk(
   'cart/add',
-  async ({ productId, quantity, variation }: { productId: number; quantity: number; variation?: Record<string, string> }) => {
-    const { data } = await axios.post('/api/cart', { productId, quantity, variation });
-    return data as Cart;
+  async ({ productId, quantity, variation, name, price, image }: {
+    productId: number;
+    quantity: number;
+    variation?: Record<string, string>;
+    name: string;
+    price: string;
+    image?: { src: string; alt: string };
+  }) => {
+    const cart = loadCart();
+    const variationKey = variation ? JSON.stringify(variation) : '';
+    const key = `${productId}_${variationKey}`;
+    const existing = cart.items.find(i => i.key === key);
+
+    let items: CartItem[];
+    if (existing) {
+      items = cart.items.map(i => i.key === key ? { ...i, quantity: i.quantity + quantity } : i);
+    } else {
+      items = [...cart.items, { key, id: productId, quantity, name, price, line_total: (parseFloat(price) * quantity).toFixed(2), image, variation }];
+    }
+
+    const updated = recalculate(items);
+    saveCart(updated);
+    return updated;
   }
 );
 
 export const removeFromCart = createAsyncThunk('cart/remove', async (itemKey: string) => {
-  const { data } = await axios.delete('/api/cart', { data: { itemKey } });
-  return data as Cart;
+  const cart = loadCart();
+  const updated = recalculate(cart.items.filter(i => i.key !== itemKey));
+  saveCart(updated);
+  return updated;
 });
 
 export const updateQuantity = createAsyncThunk(
   'cart/updateQuantity',
   async ({ itemKey, quantity }: { itemKey: string; quantity: number }) => {
-    const { data } = await axios.put('/api/cart', { itemKey, quantity });
-    return data as Cart;
+    const cart = loadCart();
+    const items = quantity <= 0
+      ? cart.items.filter(i => i.key !== itemKey)
+      : cart.items.map(i => i.key === itemKey ? { ...i, quantity, line_total: (parseFloat(i.price) * quantity).toFixed(2) } : i);
+    const updated = recalculate(items);
+    saveCart(updated);
+    return updated;
   }
 );
 
 export const clearCart = createAsyncThunk('cart/clear', async () => {
-  await axios.delete('/api/cart/clear');
+  saveCart(emptyCart());
 });
 
 const cartSlice = createSlice({
@@ -50,7 +107,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // fetchCart
     builder.addCase(fetchCart.pending, (state) => { state.loading = true; });
     builder.addCase(fetchCart.fulfilled, (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
@@ -60,41 +116,22 @@ const cartSlice = createSlice({
     builder.addCase(fetchCart.rejected, (state) => {
       state.loading = false;
       state.fetched = true;
-      toast.error('Failed to load cart');
     });
 
-    // addToCart
     builder.addCase(addToCart.fulfilled, (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
-      toast.success('Product added to cart');
-    });
-    builder.addCase(addToCart.rejected, () => {
-      toast.error('Failed to add product to cart');
     });
 
-    // removeFromCart
     builder.addCase(removeFromCart.fulfilled, (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
-      toast.success('Item removed from cart');
-    });
-    builder.addCase(removeFromCart.rejected, () => {
-      toast.error('Failed to remove item');
     });
 
-    // updateQuantity
     builder.addCase(updateQuantity.fulfilled, (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
     });
-    builder.addCase(updateQuantity.rejected, () => {
-      toast.error('Failed to update quantity');
-    });
 
-    // clearCart
     builder.addCase(clearCart.fulfilled, (state) => {
-      state.cart = null;
-    });
-    builder.addCase(clearCart.rejected, () => {
-      toast.error('Failed to clear cart');
+      state.cart = emptyCart();
     });
   },
 });

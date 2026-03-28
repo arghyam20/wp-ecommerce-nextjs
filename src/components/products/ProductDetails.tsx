@@ -19,7 +19,14 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
   const handleAddToCart = async () => {
     try {
-      await addToCart(product.id, quantity, selectedVariation);
+      await addToCart(
+        product.id,
+        quantity,
+        Object.keys(selectedVariation).length ? selectedVariation : undefined,
+        product.name,
+        product.sale_price || product.price,
+        product.images[0] ? { src: product.images[0].src, alt: product.images[0].alt } : undefined
+      );
       toast.success('Product added to cart!');
     } catch {
       toast.error('Failed to add product to cart');

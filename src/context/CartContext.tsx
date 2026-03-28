@@ -29,8 +29,8 @@ export const useCart = () => {
   return {
     cart,
     loading,
-    addToCart: (productId: number, quantity: number, variation?: Record<string, string>) =>
-      dispatch(addToCartThunk({ productId, quantity, variation })).unwrap(),
+    addToCart: (productId: number, quantity: number, variation?: Record<string, string>, name?: string, price?: string, image?: { src: string; alt: string }) =>
+      dispatch(addToCartThunk({ productId, quantity, variation, name: name ?? '', price: price ?? '0', image })).unwrap(),
     removeFromCart: (itemKey: string) =>
       dispatch(removeFromCartThunk(itemKey)).unwrap(),
     updateQuantity: (itemKey: string, quantity: number) =>

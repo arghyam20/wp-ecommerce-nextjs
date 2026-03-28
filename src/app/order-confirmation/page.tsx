@@ -10,12 +10,25 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function OrderConfirmationPage() {
+export default async function OrderConfirmationPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ order?: string }>;
+}) {
+  const { order } = await searchParams;
+
   return (
     <Layout>
       <Container maxWidth="sm" sx={{ py: 12, textAlign: 'center' }}>
         <CheckCircleIcon sx={{ fontSize: 80, color: 'success.main', mb: 2 }} />
-        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>Order Placed!</Typography>
+        <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+          Order Placed!
+        </Typography>
+        {order && (
+          <Typography variant="h6" color="text.secondary" mb={1}>
+            Order #{order}
+          </Typography>
+        )}
         <Typography color="text.secondary" mb={4}>
           Thank you for your purchase. You will receive a confirmation email shortly.
         </Typography>

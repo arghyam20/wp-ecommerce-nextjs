@@ -18,7 +18,14 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = async () => {
     setLoading(true);
     try {
-      await addToCart(product.id, 1);
+      await addToCart(
+        product.id,
+        1,
+        undefined,
+        product.name,
+        product.sale_price || product.price,
+        product.images[0] ? { src: product.images[0].src, alt: product.images[0].alt } : undefined
+      );
     } finally {
       setLoading(false);
     }

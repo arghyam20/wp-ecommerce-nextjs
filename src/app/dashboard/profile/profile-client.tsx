@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/common/DashboardLayout';
-import { Typography, TextField, Button, Box, Paper, Avatar } from '@mui/material';
+import { Typography, TextField, Button, Box, Grid, Divider } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 import { profileSchema } from '@/lib/validation/schemas';
@@ -38,9 +38,9 @@ export default function ProfileClient() {
     setLoading(true);
     try {
       await axios.put('/api/user/profile', data);
-      toast.success('Profile updated successfully!');
+      toast.success('Account details saved.');
     } catch {
-      toast.error('Failed to update profile');
+      toast.error('Failed to update profile.');
     } finally {
       setLoading(false);
     }
@@ -50,33 +50,49 @@ export default function ProfileClient() {
 
   return (
     <DashboardLayout>
-      <Typography variant="h5" component="h1" fontWeight="bold" mb={3}>My Profile</Typography>
-      <Paper sx={{ p: 4 }} elevation={2}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 4 }}>
-          <Avatar src={user.avatarUrl} sx={{ width: 64, height: 64, fontSize: 28 }}>
-            {user.firstName?.[0]}
-          </Avatar>
-          <Box>
-            <Typography fontWeight="bold">{user.firstName} {user.lastName}</Typography>
-            <Typography variant="body2" color="text.secondary">{user.email}</Typography>
-          </Box>
-        </Box>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <TextField fullWidth label="First Name" {...register('firstName')}
+      <Typography variant="h5" component="h1" fontWeight="bold" mb={3}>Account Details</Typography>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 600 }}>
+          {/* Name */}
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth label="First Name *" {...register('firstName')}
                 error={!!errors.firstName} helperText={errors.firstName?.message} />
-              <TextField fullWidth label="Last Name" {...register('lastName')}
+            </Grid>
+            <Grid size={{ xs: 12, sm: 6 }}>
+              <TextField fullWidth label="Last Name *" {...register('lastName')}
                 error={!!errors.lastName} helperText={errors.lastName?.message} />
-            </Box>
-            <TextField fullWidth label="Email" type="email" {...register('email')}
-              error={!!errors.email} helperText={errors.email?.message} />
-            <Button type="submit" variant="contained" disabled={loading} sx={{ alignSelf: 'flex-start' }}>
-              {loading ? 'Saving...' : 'Save Changes'}
-            </Button>
+            </Grid>
+          </Grid>
+
+          {/* Display name hint */}
+          <Typography variant="caption" color="text.secondary" sx={{ mt: -2 }}>
+            This will be how your name will be displayed in the account section and in reviews.
+          </Typography>
+
+          <Divider />
+
+          {/* Email */}
+          <TextField fullWidth label="Email Address *" type="email" {...register('email')}
+            error={!!errors.email} helperText={errors.email?.message} />
+
+          <Divider />
+
+          {/* Password change hint */}
+          <Box>
+            <Typography variant="body2" color="text.secondary" mb={1}>
+              Want to change your password?{' '}
+              <a href="/dashboard/change-password" style={{ color: 'inherit', fontWeight: 600 }}>
+                Click here
+              </a>
+            </Typography>
           </Box>
-        </form>
-      </Paper>
+
+          <Button type="submit" variant="contained" disabled={loading} sx={{ alignSelf: 'flex-start', px: 4 }}>
+            {loading ? 'Saving...' : 'Save Changes'}
+          </Button>
+        </Box>
+      </form>
     </DashboardLayout>
   );
 }

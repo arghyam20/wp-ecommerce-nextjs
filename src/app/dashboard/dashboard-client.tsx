@@ -4,15 +4,8 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/common/DashboardLayout';
-import { Typography, Paper, Box, Button, Grid } from '@mui/material';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
-import PersonIcon from '@mui/icons-material/Person';
+import { Typography, Box, Button } from '@mui/material';
 import Link from 'next/link';
-
-const cards = [
-  { label: 'My Orders', desc: 'View your order history', href: '/dashboard/orders', icon: <ShoppingBagIcon fontSize="large" color="primary" /> },
-  { label: 'Profile', desc: 'Update your personal info', href: '/dashboard/profile', icon: <PersonIcon fontSize="large" color="primary" /> },
-];
 
 export default function DashboardClient() {
   const { data: session, status } = useSession();
@@ -24,26 +17,33 @@ export default function DashboardClient() {
 
   if (status === 'loading' || !session) return null;
 
-  const name = session.user?.name || 'there';
+  const name = session.user?.name || session.user?.email || 'there';
 
   return (
     <DashboardLayout>
-      <Typography variant="h4" fontWeight="bold" mb={1}>Welcome, {name}!</Typography>
-      <Typography color="text.secondary" mb={4}>Manage your account and orders from here.</Typography>
-      <Grid container spacing={3}>
-        {cards.map(({ label, desc, href, icon }) => (
-          <Grid size={{ xs: 12, sm: 6 }} key={href}>
-            <Paper sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 1 }} elevation={2}>
-              <Box>{icon}</Box>
-              <Typography variant="h6" fontWeight="bold">{label}</Typography>
-              <Typography color="text.secondary" variant="body2">{desc}</Typography>
-              <Link href={href} passHref>
-                <Button variant="outlined" size="small" sx={{ alignSelf: 'flex-start', mt: 1 }}>Go</Button>
-              </Link>
-            </Paper>
-          </Grid>
-        ))}
-      </Grid>
+      <Typography variant="body1" mb={3}>
+        Hello <strong>{name}</strong> (not {name}?{' '}
+        <Link href="/api/auth/signout" style={{ color: 'inherit' }}>Log out</Link>)
+      </Typography>
+      <Typography variant="body1" color="text.secondary">
+        From your account dashboard you can view your{' '}
+        <Link href="/dashboard/orders"><strong>recent orders</strong></Link>,
+        manage your{' '}
+        <Link href="/dashboard/profile"><strong>account details</strong></Link>{' '}
+        and{' '}
+        <Link href="/dashboard/change-password"><strong>change your password</strong></Link>.
+      </Typography>
+      <Box sx={{ display: 'flex', gap: 2, mt: 4, flexWrap: 'wrap' }}>
+        <Link href="/dashboard/orders" passHref>
+          <Button variant="outlined">View Orders</Button>
+        </Link>
+        <Link href="/dashboard/profile" passHref>
+          <Button variant="outlined">Account Details</Button>
+        </Link>
+        <Link href="/products" passHref>
+          <Button variant="outlined">Browse Products</Button>
+        </Link>
+      </Box>
     </DashboardLayout>
   );
 }

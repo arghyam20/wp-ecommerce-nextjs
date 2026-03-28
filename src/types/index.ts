@@ -55,6 +55,23 @@ export interface User {
   lastName: string;
   username: string;
   avatarUrl?: string;
+  billing?: {
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+    phone: string;
+  };
+  shipping?: {
+    address1: string;
+    address2: string;
+    city: string;
+    state: string;
+    postcode: string;
+    country: string;
+  };
 }
 
 export interface Order {

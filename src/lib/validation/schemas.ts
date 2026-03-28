@@ -100,3 +100,23 @@ export const profileSchema = Joi.object({
     'string.empty': 'Email is required',
   }),
 });
+
+export const addressSchema = Joi.object({
+  billing: Joi.object({
+    address1: Joi.string().allow('').optional(),
+    address2: Joi.string().allow('').optional(),
+    city: Joi.string().allow('').optional(),
+    state: Joi.string().allow('').optional(),
+    postcode: Joi.string().allow('').optional(),
+    country: Joi.string().length(2).allow('').optional(),
+    phone: Joi.string().allow('').optional(),
+  }),
+  shipping: Joi.object({
+    address1: Joi.string().allow('').optional(),
+    address2: Joi.string().allow('').optional(),
+    city: Joi.string().allow('').optional(),
+    state: Joi.string().allow('').optional(),
+    postcode: Joi.string().allow('').optional(),
+    country: Joi.string().length(2).allow('').optional(),
+  }),
+});

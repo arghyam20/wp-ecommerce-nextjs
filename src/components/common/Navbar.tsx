@@ -45,7 +45,7 @@ export default function Navbar() {
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}>
                 <MenuItem disabled>
-                  <Typography variant="body2" color="text.secondary">{session.user?.email}</Typography>
+                  <Typography variant="body2" color="text.secondary">{session.user?.name || session.user?.email}</Typography>
                 </MenuItem>
                 <Divider />
                 <MenuItem component={Link} href="/dashboard" onClick={() => setAnchor(null)}>Dashboard</MenuItem>
