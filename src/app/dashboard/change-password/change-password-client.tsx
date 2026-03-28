@@ -27,14 +27,15 @@ export default function ChangePasswordClient() {
     if (status === 'unauthenticated') router.push('/login?callbackUrl=/dashboard/change-password');
   }, [status, router]);
 
-  const onSubmit = async ({ newPassword }: ChangePasswordForm) => {
+  const onSubmit = async ({ currentPassword, newPassword }: ChangePasswordForm) => {
     setLoading(true);
     try {
-      await axios.post('/api/user/change-password', { newPassword });
+      await axios.post('/api/user/change-password', { currentPassword, newPassword });
       toast.success('Password changed successfully!');
       reset();
-    } catch {
-      toast.error('Failed to change password');
+    } catch (err) {
+      const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Failed to change password';
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
