@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Layout from '@/components/common/Layout';
 import ProductDetails from '@/components/products/ProductDetails';
-import { getProducts, getProductBySlug } from '@/lib/woocommerce/products';
+import ProductGrid from '@/components/products/ProductGrid';
+import { getProducts, getProductBySlug, getRelatedProducts } from '@/lib/woocommerce/products';
+import { Container, Typography, Divider } from '@mui/material';
 
 export const revalidate = 3600;
 
@@ -15,11 +17,7 @@ export async function generateStaticParams() {
   }
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   try {
     const product = await getProductBySlug(slug);
@@ -40,11 +38,7 @@ export async function generateMetadata({
   }
 }
 
-export default async function ProductPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   let product;
   try {
@@ -54,9 +48,19 @@ export default async function ProductPage({
   }
   if (!product) notFound();
 
+  const categoryId = product.categories?.[0]?.id;
+  const related = categoryId ? await getRelatedProducts(product.id, categoryId) : [];
+
   return (
     <Layout>
       <ProductDetails product={product} />
+      {related.length > 0 && (
+        <Container maxWidth="lg" sx={{ pb: 6 }}>
+          <Divider sx={{ mb: 4 }} />
+          <Typography variant="h5" fontWeight="bold" mb={3}>Related Products</Typography>
+          <ProductGrid products={related} />
+        </Container>
+      )}
     </Layout>
   );
 }

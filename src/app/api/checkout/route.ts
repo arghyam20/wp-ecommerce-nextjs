@@ -15,7 +15,7 @@ const PAYMENT_TITLES: Record<string, string> = {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { items, ...formData }: { items: CartItem[] } & Record<string, unknown> = body;
+    const { items, orderNote, ...formData }: { items: CartItem[]; orderNote?: string } & Record<string, unknown> = body;
 
     if (!items || items.length === 0) {
       return NextResponse.json({ message: 'Cart is empty' }, { status: 400 });
@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
       payment_method_title: PAYMENT_TITLES[validatedData.paymentMethod] ?? validatedData.paymentMethod,
       set_paid: false,
       status: 'pending',
+      ...(orderNote && { customer_note: orderNote }),
       billing: {
         first_name: validatedData.firstName,
         last_name: validatedData.lastName,

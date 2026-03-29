@@ -112,3 +112,12 @@ export interface CheckoutFormData {
   country: string;
   paymentMethod: string;
 }
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+  image?: { src: string; alt: string };
+  parent: number;
+}

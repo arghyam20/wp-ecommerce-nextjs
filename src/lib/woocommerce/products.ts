@@ -1,18 +1,21 @@
 import WooCommerce from './client';
-import { Product } from '@/types';
+import { cache } from 'react';
+import { Product, Category } from '@/types';
 
-export const getProducts = async (
+export const getProducts = cache(async (
   page = 1,
   perPage = 12,
   search = '',
   orderby = 'date',
-  order = 'desc'
+  order = 'desc',
+  category = ''
 ) => {
   try {
     const response = await WooCommerce.get('products', {
       page,
       per_page: perPage,
       ...(search && { search }),
+      ...(category && { category }),
       orderby,
       order,
     });
@@ -23,21 +26,46 @@ export const getProducts = async (
     console.error('Error fetching products:', error);
     throw error;
   }
-};
+});
 
-export const getProductBySlug = async (slug: string) => {
+export const getProductBySlug = cache(async (slug: string) => {
   try {
-    const { data } = await WooCommerce.get('products', {
-      slug,
-    });
+    const { data } = await WooCommerce.get('products', { slug });
     return data[0] as Product;
   } catch (error) {
     console.error('Error fetching product:', error);
     throw error;
   }
-};
+});
 
-export const getProductsByCategory = async (categoryId: number, page = 1, perPage = 12) => {
+export const getRelatedProducts = cache(async (productId: number, categoryId: number) => {
+  try {
+    const { data } = await WooCommerce.get('products', {
+      category: categoryId,
+      exclude: [productId],
+      per_page: 4,
+    });
+    return Array.isArray(data) ? data as Product[] : [];
+  } catch {
+    return [];
+  }
+});
+
+export const getCategories = cache(async () => {
+  try {
+    const { data } = await WooCommerce.get('products/categories', {
+      per_page: 50,
+      hide_empty: true,
+      orderby: 'count',
+      order: 'desc',
+    });
+    return Array.isArray(data) ? data as Category[] : [];
+  } catch {
+    return [];
+  }
+});
+
+export const getProductsByCategory = cache(async (categoryId: number, page = 1, perPage = 12) => {
   try {
     const { data } = await WooCommerce.get('products', {
       category: categoryId,
@@ -49,16 +77,14 @@ export const getProductsByCategory = async (categoryId: number, page = 1, perPag
     console.error('Error fetching products by category:', error);
     throw error;
   }
-};
+});
 
-export const searchProducts = async (query: string) => {
+export const searchProducts = cache(async (query: string) => {
   try {
-    const { data } = await WooCommerce.get('products', {
-      search: query,
-    });
+    const { data } = await WooCommerce.get('products', { search: query });
     return data as Product[];
   } catch (error) {
     console.error('Error searching products:', error);
     throw error;
   }
-};
+});
