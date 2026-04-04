@@ -52,7 +52,11 @@ export async function PUT(req: NextRequest) {
       last_name: lastName,
       email,
     });
-    return NextResponse.json({ firstName: data.first_name, lastName: data.last_name, email: data.email });
+    return NextResponse.json({
+      firstName: data.first_name,
+      lastName: data.last_name,
+      email: data.email,
+    });
   } catch {
     return NextResponse.json({ message: 'Failed to update profile' }, { status: 500 });
   }

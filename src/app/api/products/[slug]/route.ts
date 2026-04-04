@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getProductBySlug } from '@/lib/woocommerce/products';
 
-export async function GET(
-  _req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   try {
     const product = await getProductBySlug(slug);

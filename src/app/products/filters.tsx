@@ -3,8 +3,14 @@
 import { useState, useTransition } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
-  Box, TextField, MenuItem, Select, FormControl,
-  InputLabel, InputAdornment, CircularProgress,
+  Box,
+  TextField,
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  InputAdornment,
+  CircularProgress,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -19,13 +25,7 @@ const SORT_OPTIONS = [
   { label: 'Rating', orderby: 'rating', order: 'desc' },
 ];
 
-export default function ProductsFilters({
-  search,
-  sort,
-}: {
-  search: string;
-  sort: string;
-}) {
+export default function ProductsFilters({ search, sort }: { search: string; sort: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();

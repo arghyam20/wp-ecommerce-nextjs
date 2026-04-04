@@ -12,7 +12,11 @@ import { User } from '@/types';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-interface ProfileForm { firstName: string; lastName: string; email: string; }
+interface ProfileForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
 
 export default function ProfileClient() {
   const { data: session, status } = useSession();
@@ -20,17 +24,25 @@ export default function ProfileClient() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<ProfileForm>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ProfileForm>({
     resolver: joiResolver(profileSchema),
   });
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/login?callbackUrl=/dashboard/profile');
     if (status === 'authenticated') {
-      axios.get('/api/user/profile').then((r) => {
-        setUser(r.data);
-        reset({ firstName: r.data.firstName, lastName: r.data.lastName, email: r.data.email });
-      }).catch(() => {});
+      axios
+        .get('/api/user/profile')
+        .then((r) => {
+          setUser(r.data);
+          reset({ firstName: r.data.firstName, lastName: r.data.lastName, email: r.data.email });
+        })
+        .catch(() => {});
     }
   }, [status, router, reset]);
 
@@ -50,18 +62,30 @@ export default function ProfileClient() {
 
   return (
     <DashboardLayout>
-      <Typography variant="h5" component="h1" fontWeight="bold" mb={3}>Account Details</Typography>
+      <Typography variant="h5" component="h1" fontWeight="bold" mb={3}>
+        Account Details
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, maxWidth: 600 }}>
           {/* Name */}
           <Grid container spacing={2}>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField fullWidth label="First Name *" {...register('firstName')}
-                error={!!errors.firstName} helperText={errors.firstName?.message} />
+              <TextField
+                fullWidth
+                label="First Name *"
+                {...register('firstName')}
+                error={!!errors.firstName}
+                helperText={errors.firstName?.message}
+              />
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
-              <TextField fullWidth label="Last Name *" {...register('lastName')}
-                error={!!errors.lastName} helperText={errors.lastName?.message} />
+              <TextField
+                fullWidth
+                label="Last Name *"
+                {...register('lastName')}
+                error={!!errors.lastName}
+                helperText={errors.lastName?.message}
+              />
             </Grid>
           </Grid>
 
@@ -73,8 +97,14 @@ export default function ProfileClient() {
           <Divider />
 
           {/* Email */}
-          <TextField fullWidth label="Email Address *" type="email" {...register('email')}
-            error={!!errors.email} helperText={errors.email?.message} />
+          <TextField
+            fullWidth
+            label="Email Address *"
+            type="email"
+            {...register('email')}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+          />
 
           <Divider />
 
@@ -88,7 +118,12 @@ export default function ProfileClient() {
             </Typography>
           </Box>
 
-          <Button type="submit" variant="contained" disabled={loading} sx={{ alignSelf: 'flex-start', px: 4 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={loading}
+            sx={{ alignSelf: 'flex-start', px: 4 }}
+          >
             {loading ? 'Saving...' : 'Save Changes'}
           </Button>
         </Box>

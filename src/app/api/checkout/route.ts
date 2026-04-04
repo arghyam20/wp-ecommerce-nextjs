@@ -15,7 +15,11 @@ const PAYMENT_TITLES: Record<string, string> = {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { items, orderNote, ...formData }: { items: CartItem[]; orderNote?: string } & Record<string, unknown> = body;
+    const {
+      items,
+      orderNote,
+      ...formData
+    }: { items: CartItem[]; orderNote?: string } & Record<string, unknown> = body;
 
     if (!items || items.length === 0) {
       return NextResponse.json({ message: 'Cart is empty' }, { status: 400 });
@@ -30,7 +34,8 @@ export async function POST(req: NextRequest) {
     const { data } = await WooCommerce.post('orders', {
       ...(customerId && { customer_id: Number(customerId) }),
       payment_method: validatedData.paymentMethod,
-      payment_method_title: PAYMENT_TITLES[validatedData.paymentMethod] ?? validatedData.paymentMethod,
+      payment_method_title:
+        PAYMENT_TITLES[validatedData.paymentMethod as string] ?? validatedData.paymentMethod,
       set_paid: false,
       status: 'pending',
       ...(orderNote && { customer_note: orderNote }),

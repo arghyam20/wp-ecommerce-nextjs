@@ -11,13 +11,20 @@ import toast from 'react-hot-toast';
 import { useState } from 'react';
 import Layout from '@/components/common/Layout';
 
-interface LoginForm { email: string; password: string; }
+interface LoginForm {
+  email: string;
+  password: string;
+}
 
 export default function LoginClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
     resolver: joiResolver(loginSchema),
   });
 
@@ -35,17 +42,41 @@ export default function LoginClient() {
 
   return (
     <Layout>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', px: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '80vh',
+          px: 2,
+        }}
+      >
         <Paper sx={{ p: 4, width: '100%', maxWidth: 420 }} elevation={3}>
-          <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>Sign In</Typography>
+          <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>
+            Sign In
+          </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField fullWidth label="Email" type="email" {...register('email')}
-                error={!!errors.email} helperText={errors.email?.message} />
-              <TextField fullWidth label="Password" type="password" {...register('password')}
-                error={!!errors.password} helperText={errors.password?.message} />
+              <TextField
+                fullWidth
+                label="Email"
+                type="email"
+                {...register('email')}
+                error={!!errors.email}
+                helperText={errors.email?.message}
+              />
+              <TextField
+                fullWidth
+                label="Password"
+                type="password"
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
               <Box textAlign="right">
-                <Link href="/forgot-password" style={{ fontSize: 14 }}>Forgot password?</Link>
+                <Link href="/forgot-password" style={{ fontSize: 14 }}>
+                  Forgot password?
+                </Link>
               </Box>
               <Button type="submit" variant="contained" size="large" fullWidth disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
@@ -54,8 +85,7 @@ export default function LoginClient() {
           </form>
           <Divider sx={{ my: 2 }} />
           <Typography textAlign="center" variant="body2">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup">Create one</Link>
+            Don&apos;t have an account? <Link href="/signup">Create one</Link>
           </Typography>
         </Paper>
       </Box>

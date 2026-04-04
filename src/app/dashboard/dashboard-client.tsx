@@ -23,15 +23,25 @@ export default function DashboardClient() {
     <DashboardLayout>
       <Typography variant="body1" mb={3}>
         Hello <strong>{name}</strong> (not {name}?{' '}
-        <Link href="/api/auth/signout" style={{ color: 'inherit' }}>Log out</Link>)
+        <Link href="/api/auth/signout" style={{ color: 'inherit' }}>
+          Log out
+        </Link>
+        )
       </Typography>
       <Typography variant="body1" color="text.secondary">
         From your account dashboard you can view your{' '}
-        <Link href="/dashboard/orders"><strong>recent orders</strong></Link>,
-        manage your{' '}
-        <Link href="/dashboard/profile"><strong>account details</strong></Link>{' '}
+        <Link href="/dashboard/orders">
+          <strong>recent orders</strong>
+        </Link>
+        , manage your{' '}
+        <Link href="/dashboard/profile">
+          <strong>account details</strong>
+        </Link>{' '}
         and{' '}
-        <Link href="/dashboard/change-password"><strong>change your password</strong></Link>.
+        <Link href="/dashboard/change-password">
+          <strong>change your password</strong>
+        </Link>
+        .
       </Typography>
       <Box sx={{ display: 'flex', gap: 2, mt: 4, flexWrap: 'wrap' }}>
         <Link href="/dashboard/orders" passHref>

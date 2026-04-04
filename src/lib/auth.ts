@@ -1,7 +1,7 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
+import { NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
 
 type JWTPayload = {
   iss: string;
@@ -18,16 +18,16 @@ type JWTPayload = {
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         try {
           const { data } = await axios.post(
             `${process.env.WOOCOMMERCE_URL}/wp-json/jwt-auth/v1/token`,
-            { username: credentials?.email, password: credentials?.password },
+            { username: credentials?.email, password: credentials?.password }
           );
           if (data?.token) {
             const decoded = jwtDecode<JWTPayload>(data.token);
@@ -66,9 +66,9 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/login",
-    error: "/login",
+    signIn: '/login',
+    error: '/login',
   },
-  session: { strategy: "jwt" },
+  session: { strategy: 'jwt' },
   secret: process.env.NEXTAUTH_SECRET,
 };

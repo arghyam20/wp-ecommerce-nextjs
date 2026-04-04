@@ -10,7 +10,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'All Products',
-  description: 'Browse our full collection of quality products. Filter by category, price, and more.',
+  description:
+    'Browse our full collection of quality products. Filter by category, price, and more.',
 };
 
 export const revalidate = 3600;
@@ -26,19 +27,26 @@ export default async function ProductsPage({
   const [orderby, order] = sort.split('-') as [string, string];
 
   const [{ products, totalPages }, categories] = await Promise.all([
-    getProducts(page, PER_PAGE, search, orderby, order, category).catch(() => ({ products: [] as Product[], totalPages: 1 })),
+    getProducts(page, PER_PAGE, search, orderby, order, category).catch(() => ({
+      products: [] as Product[],
+      totalPages: 1,
+    })),
     getCategories().catch(() => []),
   ]);
 
   return (
     <Layout>
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Typography variant="h4" component="h1" fontWeight="bold" mb={4}>Shop</Typography>
+        <Typography variant="h4" component="h1" fontWeight="bold" mb={4}>
+          Shop
+        </Typography>
         <Grid container spacing={4}>
           {/* Sidebar */}
           <Grid size={{ xs: 12, md: 3 }}>
             <Box sx={{ position: 'sticky', top: 80 }}>
-              <Typography variant="subtitle1" fontWeight="bold" mb={2}>Categories</Typography>
+              <Typography variant="subtitle1" fontWeight="bold" mb={2}>
+                Categories
+              </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
                 <Link href="/products" style={{ textDecoration: 'none' }}>
                   <Chip
@@ -49,17 +57,23 @@ export default async function ProductsPage({
                     sx={{ justifyContent: 'flex-start', width: '100%' }}
                   />
                 </Link>
-                {categories.filter(c => c.parent === 0).map((cat) => (
-                  <Link key={cat.id} href={`/products?category=${cat.id}`} style={{ textDecoration: 'none' }}>
-                    <Chip
-                      label={`${cat.name} (${cat.count})`}
-                      clickable
-                      variant={category === String(cat.id) ? 'filled' : 'outlined'}
-                      color={category === String(cat.id) ? 'primary' : 'default'}
-                      sx={{ justifyContent: 'flex-start', width: '100%' }}
-                    />
-                  </Link>
-                ))}
+                {categories
+                  .filter((c) => c.parent === 0)
+                  .map((cat) => (
+                    <Link
+                      key={cat.id}
+                      href={`/products?category=${cat.id}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <Chip
+                        label={`${cat.name} (${cat.count})`}
+                        clickable
+                        variant={category === String(cat.id) ? 'filled' : 'outlined'}
+                        color={category === String(cat.id) ? 'primary' : 'default'}
+                        sx={{ justifyContent: 'flex-start', width: '100%' }}
+                      />
+                    </Link>
+                  ))}
               </Box>
             </Box>
           </Grid>
@@ -77,7 +91,12 @@ export default async function ProductsPage({
                   Showing {products.length} product{products.length !== 1 ? 's' : ''}
                 </Typography>
                 <ProductGrid products={products} />
-                <ProductsPagination page={page} totalPages={totalPages} search={search} sort={sort} />
+                <ProductsPagination
+                  page={page}
+                  totalPages={totalPages}
+                  search={search}
+                  sort={sort}
+                />
               </>
             )}
           </Grid>

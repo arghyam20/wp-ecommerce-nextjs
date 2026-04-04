@@ -11,7 +11,10 @@ import { useState } from 'react';
 import axios from 'axios';
 import Layout from '@/components/common/Layout';
 
-interface ResetForm { password: string; confirmPassword: string; }
+interface ResetForm {
+  password: string;
+  confirmPassword: string;
+}
 
 export default function ResetPasswordClient() {
   const router = useRouter();
@@ -20,7 +23,11 @@ export default function ResetPasswordClient() {
   const code = searchParams.get('code');
   const [loading, setLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<ResetForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetForm>({
     resolver: joiResolver(resetPasswordSchema),
   });
 
@@ -35,7 +42,10 @@ export default function ResetPasswordClient() {
       toast.success('Password reset successfully!');
       router.push('/login');
     } catch (err) {
-      toast.error((err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Reset failed');
+      toast.error(
+        (err as { response?: { data?: { message?: string } } }).response?.data?.message ||
+          'Reset failed'
+      );
     } finally {
       setLoading(false);
     }
@@ -43,15 +53,37 @@ export default function ResetPasswordClient() {
 
   return (
     <Layout>
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', px: 2 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '80vh',
+          px: 2,
+        }}
+      >
         <Paper sx={{ p: 4, width: '100%', maxWidth: 420 }} elevation={3}>
-          <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>Reset Password</Typography>
+          <Typography variant="h5" fontWeight="bold" textAlign="center" mb={3}>
+            Reset Password
+          </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField fullWidth label="New Password" type="password" {...register('password')}
-                error={!!errors.password} helperText={errors.password?.message} />
-              <TextField fullWidth label="Confirm Password" type="password" {...register('confirmPassword')}
-                error={!!errors.confirmPassword} helperText={errors.confirmPassword?.message} />
+              <TextField
+                fullWidth
+                label="New Password"
+                type="password"
+                {...register('password')}
+                error={!!errors.password}
+                helperText={errors.password?.message}
+              />
+              <TextField
+                fullWidth
+                label="Confirm Password"
+                type="password"
+                {...register('confirmPassword')}
+                error={!!errors.confirmPassword}
+                helperText={errors.confirmPassword?.message}
+              />
               <Button type="submit" variant="contained" size="large" fullWidth disabled={loading}>
                 {loading ? 'Resetting...' : 'Reset Password'}
               </Button>

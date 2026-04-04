@@ -16,10 +16,10 @@ export async function POST(req: NextRequest) {
 
   try {
     // Verify current password via JWT auth
-    await axios.post(
-      `${process.env.WOOCOMMERCE_URL}/wp-json/jwt-auth/v1/token`,
-      { username: session.user?.email, password: currentPassword }
-    );
+    await axios.post(`${process.env.WOOCOMMERCE_URL}/wp-json/jwt-auth/v1/token`, {
+      username: session.user?.email,
+      password: currentPassword,
+    });
   } catch {
     return NextResponse.json({ message: 'Current password is incorrect' }, { status: 400 });
   }

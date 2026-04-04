@@ -9,7 +9,11 @@ const WISHLIST_KEY = 'wp_wishlist';
 
 function load(): Product[] {
   if (typeof window === 'undefined') return [];
-  try { return JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]'); } catch { return []; }
+  try {
+    return JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+  } catch {
+    return [];
+  }
 }
 
 function save(items: Product[]) {
@@ -24,9 +28,9 @@ const wishlistSlice = createSlice({
       state.items = load();
     },
     toggleWishlist(state, action: PayloadAction<Product>) {
-      const exists = state.items.find(i => i.id === action.payload.id);
+      const exists = state.items.find((i) => i.id === action.payload.id);
       if (exists) {
-        state.items = state.items.filter(i => i.id !== action.payload.id);
+        state.items = state.items.filter((i) => i.id !== action.payload.id);
       } else {
         state.items.push(action.payload);
       }

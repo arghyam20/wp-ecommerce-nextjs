@@ -28,7 +28,8 @@ export default function ProductsPagination({ page, totalPages, search, sort }: P
   const getPageNumbers = () => {
     if (totalPages <= 7) return Array.from({ length: totalPages }, (_, i) => i + 1);
     if (page <= 4) return [1, 2, 3, 4, 5, '...', totalPages];
-    if (page >= totalPages - 3) return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    if (page >= totalPages - 3)
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
     return [1, '...', page - 1, page, page + 1, '...', totalPages];
   };
 
@@ -45,7 +46,9 @@ export default function ProductsPagination({ page, totalPages, search, sort }: P
 
       {getPageNumbers().map((p, i) =>
         p === '...' ? (
-          <Box key={`ellipsis-${i}`} sx={{ px: 1, color: 'text.secondary' }}>…</Box>
+          <Box key={`ellipsis-${i}`} sx={{ px: 1, color: 'text.secondary' }}>
+            …
+          </Box>
         ) : (
           <Button
             key={p}

@@ -1,7 +1,17 @@
 'use client';
 
 import { Product } from '@/types';
-import { Card, CardContent, CardMedia, Typography, Button, CardActions, IconButton, Box, Tooltip } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Typography,
+  Button,
+  CardActions,
+  IconButton,
+  Box,
+  Tooltip,
+} from '@mui/material';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useState } from 'react';
@@ -22,7 +32,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCart();
   const dispatch = useDispatch<AppDispatch>();
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
-  const isWishlisted = wishlistItems.some(i => i.id === product.id);
+  const isWishlisted = wishlistItems.some((i) => i.id === product.id);
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
 
@@ -49,21 +59,49 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <Card className="h-full flex flex-col hover:shadow-lg transition-shadow" sx={{ position: 'relative' }}>
+    <Card
+      className="h-full flex flex-col hover:shadow-lg transition-shadow"
+      sx={{ position: 'relative' }}
+    >
       {/* Wishlist button */}
       <Tooltip title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}>
         <IconButton
           size="small"
           onClick={() => dispatch(toggleWishlist(product))}
-          sx={{ position: 'absolute', top: 8, right: 8, bgcolor: 'white', zIndex: 1, '&:hover': { bgcolor: 'white' } }}
+          sx={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            bgcolor: 'white',
+            zIndex: 1,
+            '&:hover': { bgcolor: 'white' },
+          }}
         >
-          {isWishlisted ? <FavoriteIcon color="error" fontSize="small" /> : <FavoriteBorderIcon fontSize="small" />}
+          {isWishlisted ? (
+            <FavoriteIcon color="error" fontSize="small" />
+          ) : (
+            <FavoriteBorderIcon fontSize="small" />
+          )}
         </IconButton>
       </Tooltip>
 
       {/* Sale badge */}
       {product.sale_price && (
-        <Box sx={{ position: 'absolute', top: 8, left: 8, bgcolor: 'error.main', color: 'white', px: 1, py: 0.25, borderRadius: 1, fontSize: 12, fontWeight: 'bold', zIndex: 1 }}>
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 8,
+            left: 8,
+            bgcolor: 'error.main',
+            color: 'white',
+            px: 1,
+            py: 0.25,
+            borderRadius: 1,
+            fontSize: 12,
+            fontWeight: 'bold',
+            zIndex: 1,
+          }}
+        >
           Sale
         </Box>
       )}
@@ -76,18 +114,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="object-cover h-48 cursor-pointer"
         />
       </Link>
-      
+
       <CardContent className="flex-grow">
         <Link href={`/products/${product.slug}`} className="no-underline">
           <Typography gutterBottom variant="h6" component="h3" className="hover:text-blue-600">
             {product.name}
           </Typography>
         </Link>
-        
+
         <Typography variant="body2" color="text.secondary" className="mb-2">
           {product.short_description.replace(/<[^>]*>/g, '').substring(0, 100)}...
         </Typography>
-        
+
         <div className="flex items-center gap-2">
           {product.sale_price ? (
             <>
@@ -105,7 +143,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
       </CardContent>
-      
+
       <CardActions>
         <Button
           fullWidth
@@ -115,7 +153,13 @@ export default function ProductCard({ product }: ProductCardProps) {
           disabled={loading || product.stock_status === 'outofstock'}
           startIcon={added ? <CheckIcon /> : <AddShoppingCartIcon />}
         >
-          {product.stock_status === 'outofstock' ? 'Out of Stock' : added ? 'Added!' : loading ? 'Adding...' : 'Add to Cart'}
+          {product.stock_status === 'outofstock'
+            ? 'Out of Stock'
+            : added
+              ? 'Added!'
+              : loading
+                ? 'Adding...'
+                : 'Add to Cart'}
         </Button>
       </CardActions>
     </Card>

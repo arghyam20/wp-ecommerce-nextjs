@@ -31,7 +31,9 @@ export default function Footer() {
         <Grid container spacing={4}>
           {/* Brand */}
           <Grid size={{ xs: 12, md: 3 }}>
-            <Typography variant="h6" fontWeight="bold" color="white" mb={1}>MyStore</Typography>
+            <Typography variant="h6" fontWeight="bold" color="white" mb={1}>
+              MyStore
+            </Typography>
             <Typography variant="body2" color="grey.500">
               Your one-stop shop for quality products at great prices. Fast shipping, easy returns.
             </Typography>
@@ -40,13 +42,24 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(LINKS).map(([title, links]) => (
             <Grid key={title} size={{ xs: 6, md: 3 }}>
-              <Typography variant="subtitle2" fontWeight="bold" color="white" mb={2} textTransform="uppercase" letterSpacing={1}>
+              <Typography
+                variant="subtitle2"
+                fontWeight="bold"
+                color="white"
+                mb={2}
+                textTransform="uppercase"
+                letterSpacing={1}
+              >
                 {title}
               </Typography>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {links.map(({ label, href }) => (
                   <Link key={href} href={href} style={{ textDecoration: 'none' }}>
-                    <Typography variant="body2" color="grey.400" sx={{ '&:hover': { color: 'white' }, transition: 'color 0.2s' }}>
+                    <Typography
+                      variant="body2"
+                      color="grey.400"
+                      sx={{ '&:hover': { color: 'white' }, transition: 'color 0.2s' }}
+                    >
                       {label}
                     </Typography>
                   </Link>
@@ -58,7 +71,8 @@ export default function Footer() {
 
         <Divider sx={{ borderColor: 'grey.700', my: 4 }} />
         <Typography variant="body2" color="grey.500" textAlign="center">
-          © {new Date().getFullYear()} MyStore. All rights reserved. Built with Next.js & WooCommerce.
+          © {new Date().getFullYear()} MyStore. All rights reserved. Built with Next.js &
+          WooCommerce.
         </Typography>
       </Container>
     </Box>

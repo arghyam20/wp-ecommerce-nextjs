@@ -12,7 +12,9 @@ import { initWishlist } from '@/store/wishlistSlice';
 
 function WishlistInit() {
   const dispatch = useDispatch<AppDispatch>();
-  useEffect(() => { dispatch(initWishlist()); }, [dispatch]);
+  useEffect(() => {
+    dispatch(initWishlist());
+  }, [dispatch]);
   return null;
 }
 

@@ -1,7 +1,17 @@
 'use client';
 
 import { Product } from '@/types';
-import { Container, Grid, Typography, Button, Box, Divider, Chip, IconButton, Tooltip } from '@mui/material';
+import {
+  Container,
+  Grid,
+  Typography,
+  Button,
+  Box,
+  Divider,
+  Chip,
+  IconButton,
+  Tooltip,
+} from '@mui/material';
 import { useState, useEffect } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,10 +38,12 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   const [added, setAdded] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const wishlistItems = useSelector((state: RootState) => state.wishlist.items);
-  const isWishlisted = wishlistItems.some(i => i.id === product.id);
+  const isWishlisted = wishlistItems.some((i) => i.id === product.id);
   const { addToCart } = useCart();
 
-  useEffect(() => { dispatch(initWishlist()); }, [dispatch]);
+  useEffect(() => {
+    dispatch(initWishlist());
+  }, [dispatch]);
 
   const price = product.sale_price || product.price;
   const inStock = product.stock_status === 'instock';
@@ -64,9 +76,13 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     <Container maxWidth="lg" sx={{ py: 6 }}>
       {/* Breadcrumb */}
       <Typography variant="body2" color="text.secondary" mb={3}>
-        <Link href="/" style={{ color: 'inherit' }}>Home</Link>
+        <Link href="/" style={{ color: 'inherit' }}>
+          Home
+        </Link>
         {' / '}
-        <Link href="/products" style={{ color: 'inherit' }}>Products</Link>
+        <Link href="/products" style={{ color: 'inherit' }}>
+          Products
+        </Link>
         {' / '}
         {product.name}
       </Typography>
@@ -74,7 +90,15 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
       <Grid container spacing={6}>
         {/* Images */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 2, overflow: 'hidden', mb: 1 }}>
+          <Box
+            sx={{
+              border: '1px solid',
+              borderColor: 'divider',
+              borderRadius: 2,
+              overflow: 'hidden',
+              mb: 1,
+            }}
+          >
             <img
               src={product.images[activeImage]?.src || '/placeholder.jpg'}
               alt={product.images[activeImage]?.alt || product.name}
@@ -89,12 +113,20 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                   key={img.id}
                   onClick={() => setActiveImage(i)}
                   sx={{
-                    width: 72, height: 72, cursor: 'pointer', border: '2px solid',
+                    width: 72,
+                    height: 72,
+                    cursor: 'pointer',
+                    border: '2px solid',
                     borderColor: activeImage === i ? 'primary.main' : 'divider',
-                    borderRadius: 1, overflow: 'hidden',
+                    borderRadius: 1,
+                    overflow: 'hidden',
                   }}
                 >
-                  <img src={img.src} alt={img.alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img
+                    src={img.src}
+                    alt={img.alt}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 </Box>
               ))}
             </Box>
@@ -113,13 +145,15 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               ${parseFloat(price).toFixed(2)}
             </Typography>
             {product.sale_price && product.regular_price && (
-              <Typography variant="h6" color="text.secondary" sx={{ textDecoration: 'line-through' }}>
+              <Typography
+                variant="h6"
+                color="text.secondary"
+                sx={{ textDecoration: 'line-through' }}
+              >
                 ${parseFloat(product.regular_price).toFixed(2)}
               </Typography>
             )}
-            {product.sale_price && (
-              <Chip label="Sale" color="error" size="small" />
-            )}
+            {product.sale_price && <Chip label="Sale" color="error" size="small" />}
           </Box>
 
           {/* Stock */}
@@ -144,14 +178,18 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
             <Box mb={2}>
               {product.attributes.map((attr) => (
                 <Box key={attr.id} mb={2}>
-                  <Typography variant="subtitle2" fontWeight="bold" mb={1}>{attr.name}</Typography>
+                  <Typography variant="subtitle2" fontWeight="bold" mb={1}>
+                    {attr.name}
+                  </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     {attr.options.map((option) => (
                       <Button
                         key={option}
                         size="small"
                         variant={selectedVariation[attr.name] === option ? 'contained' : 'outlined'}
-                        onClick={() => setSelectedVariation((prev) => ({ ...prev, [attr.name]: option }))}
+                        onClick={() =>
+                          setSelectedVariation((prev) => ({ ...prev, [attr.name]: option }))
+                        }
                         sx={{ minWidth: 48 }}
                       >
                         {option}
@@ -166,8 +204,20 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           {/* Quantity + Add to Cart + Wishlist */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
             {/* Quantity Stepper */}
-            <Box sx={{ display: 'flex', alignItems: 'center', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-              <IconButton size="small" onClick={() => handleQtyChange(quantity - 1)} disabled={quantity <= 1}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                border: '1px solid',
+                borderColor: 'divider',
+                borderRadius: 1,
+              }}
+            >
+              <IconButton
+                size="small"
+                onClick={() => handleQtyChange(quantity - 1)}
+                disabled={quantity <= 1}
+              >
                 <RemoveIcon fontSize="small" />
               </IconButton>
               <Typography sx={{ px: 2, minWidth: 40, textAlign: 'center', fontWeight: 'bold' }}>
@@ -188,12 +238,21 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               startIcon={added ? <CheckIcon /> : <AddShoppingCartIcon />}
               sx={{ flexGrow: 1, py: 1.5 }}
             >
-              {!inStock ? 'Out of Stock' : loading ? 'Adding...' : added ? 'Added to Cart!' : 'Add to Cart'}
+              {!inStock
+                ? 'Out of Stock'
+                : loading
+                  ? 'Adding...'
+                  : added
+                    ? 'Added to Cart!'
+                    : 'Add to Cart'}
             </Button>
 
             {/* Wishlist */}
             <Tooltip title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}>
-              <IconButton onClick={() => dispatch(toggleWishlist(product))} color={isWishlisted ? 'error' : 'default'}>
+              <IconButton
+                onClick={() => dispatch(toggleWishlist(product))}
+                color={isWishlisted ? 'error' : 'default'}
+              >
                 {isWishlisted ? <FavoriteIcon /> : <FavoriteBorderIcon />}
               </IconButton>
             </Tooltip>
@@ -202,7 +261,9 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           {/* View Cart link after adding */}
           {added && (
             <Typography variant="body2" mb={2}>
-              <Link href="/cart" style={{ fontWeight: 600 }}>View Cart →</Link>
+              <Link href="/cart" style={{ fontWeight: 600 }}>
+                View Cart →
+              </Link>
             </Typography>
           )}
 
@@ -211,15 +272,16 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           {/* Meta */}
           {product.categories?.length > 0 && (
             <Typography variant="body2" color="text.secondary">
-              Category:{' '}
-              {product.categories.map((c) => c.name).join(', ')}
+              Category: {product.categories.map((c) => c.name).join(', ')}
             </Typography>
           )}
 
           {/* Full Description */}
           {product.description && (
             <Box mt={3}>
-              <Typography variant="subtitle2" fontWeight="bold" mb={1}>Description</Typography>
+              <Typography variant="subtitle2" fontWeight="bold" mb={1}>
+                Description
+              </Typography>
               <Typography variant="body2" color="text.secondary" component="div">
                 <span dangerouslySetInnerHTML={{ __html: product.description }} />
               </Typography>

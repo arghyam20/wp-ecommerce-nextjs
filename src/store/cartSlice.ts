@@ -52,7 +52,14 @@ export const fetchCart = createAsyncThunk('cart/fetch', async () => {
 
 export const addToCart = createAsyncThunk(
   'cart/add',
-  async ({ productId, quantity, variation, name, price, image }: {
+  async ({
+    productId,
+    quantity,
+    variation,
+    name,
+    price,
+    image,
+  }: {
     productId: number;
     quantity: number;
     variation?: Record<string, string>;
@@ -63,13 +70,27 @@ export const addToCart = createAsyncThunk(
     const cart = loadCart();
     const variationKey = variation ? JSON.stringify(variation) : '';
     const key = `${productId}_${variationKey}`;
-    const existing = cart.items.find(i => i.key === key);
+    const existing = cart.items.find((i) => i.key === key);
 
     let items: CartItem[];
     if (existing) {
-      items = cart.items.map(i => i.key === key ? { ...i, quantity: i.quantity + quantity } : i);
+      items = cart.items.map((i) =>
+        i.key === key ? { ...i, quantity: i.quantity + quantity } : i
+      );
     } else {
-      items = [...cart.items, { key, id: productId, quantity, name, price, line_total: (parseFloat(price) * quantity).toFixed(2), image, variation }];
+      items = [
+        ...cart.items,
+        {
+          key,
+          id: productId,
+          quantity,
+          name,
+          price,
+          line_total: (parseFloat(price) * quantity).toFixed(2),
+          image,
+          variation,
+        },
+      ];
     }
 
     const updated = recalculate(items);
@@ -80,7 +101,7 @@ export const addToCart = createAsyncThunk(
 
 export const removeFromCart = createAsyncThunk('cart/remove', async (itemKey: string) => {
   const cart = loadCart();
-  const updated = recalculate(cart.items.filter(i => i.key !== itemKey));
+  const updated = recalculate(cart.items.filter((i) => i.key !== itemKey));
   saveCart(updated);
   return updated;
 });
@@ -89,9 +110,14 @@ export const updateQuantity = createAsyncThunk(
   'cart/updateQuantity',
   async ({ itemKey, quantity }: { itemKey: string; quantity: number }) => {
     const cart = loadCart();
-    const items = quantity <= 0
-      ? cart.items.filter(i => i.key !== itemKey)
-      : cart.items.map(i => i.key === itemKey ? { ...i, quantity, line_total: (parseFloat(i.price) * quantity).toFixed(2) } : i);
+    const items =
+      quantity <= 0
+        ? cart.items.filter((i) => i.key !== itemKey)
+        : cart.items.map((i) =>
+            i.key === itemKey
+              ? { ...i, quantity, line_total: (parseFloat(i.price) * quantity).toFixed(2) }
+              : i
+          );
     const updated = recalculate(items);
     saveCart(updated);
     return updated;
@@ -107,7 +133,9 @@ const cartSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchCart.pending, (state) => { state.loading = true; });
+    builder.addCase(fetchCart.pending, (state) => {
+      state.loading = true;
+    });
     builder.addCase(fetchCart.fulfilled, (state, action: PayloadAction<Cart>) => {
       state.cart = action.payload;
       state.loading = false;

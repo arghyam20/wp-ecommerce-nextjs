@@ -18,7 +18,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json({ id: data.id, email: data.email }, { status: 201 });
   } catch (err) {
-    const msg = (err as { response?: { data?: { message?: string } } }).response?.data?.message || 'Registration failed';
+    const msg =
+      (err as { response?: { data?: { message?: string } } }).response?.data?.message ||
+      'Registration failed';
     return NextResponse.json({ message: msg }, { status: 400 });
   }
 }

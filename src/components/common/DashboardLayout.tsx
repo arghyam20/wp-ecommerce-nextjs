@@ -1,7 +1,16 @@
 'use client';
 
 import Layout from '@/components/common/Layout';
-import { Box, List, ListItemButton, ListItemIcon, ListItemText, Paper, Typography, Divider } from '@mui/material';
+import {
+  Box,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+  Typography,
+  Divider,
+} from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import PersonIcon from '@mui/icons-material/Person';
@@ -16,7 +25,11 @@ const navItems = [
   { label: 'Orders', href: '/dashboard/orders', icon: <ShoppingBagIcon fontSize="small" /> },
   { label: 'Addresses', href: '/dashboard/addresses', icon: <LocationOnIcon fontSize="small" /> },
   { label: 'Account Details', href: '/dashboard/profile', icon: <PersonIcon fontSize="small" /> },
-  { label: 'Change Password', href: '/dashboard/change-password', icon: <LockIcon fontSize="small" /> },
+  {
+    label: 'Change Password',
+    href: '/dashboard/change-password',
+    icon: <LockIcon fontSize="small" />,
+  },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -26,15 +39,21 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <Layout>
       <Box sx={{ maxWidth: 1100, mx: 'auto', px: 2, py: 6, width: '100%' }}>
-        <Typography variant="h4" fontWeight="bold" mb={4}>My Account</Typography>
+        <Typography variant="h4" fontWeight="bold" mb={4}>
+          My Account
+        </Typography>
         <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
           {/* Sidebar */}
           <Paper sx={{ width: 220, flexShrink: 0 }} elevation={2}>
             {session?.user && (
               <>
                 <Box sx={{ p: 2 }}>
-                  <Typography variant="body2" color="text.secondary">Hello,</Typography>
-                  <Typography fontWeight="bold">{session.user.name || session.user.email}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Hello,
+                  </Typography>
+                  <Typography fontWeight="bold">
+                    {session.user.name || session.user.email}
+                  </Typography>
                 </Box>
                 <Divider />
               </>
@@ -60,7 +79,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               ))}
               <Divider />
               <ListItemButton onClick={() => signOut({ callbackUrl: '/' })}>
-                <ListItemIcon sx={{ minWidth: 36 }}><LogoutIcon fontSize="small" /></ListItemIcon>
+                <ListItemIcon sx={{ minWidth: 36 }}>
+                  <LogoutIcon fontSize="small" />
+                </ListItemIcon>
                 <ListItemText primary="Logout" primaryTypographyProps={{ variant: 'body2' }} />
               </ListItemButton>
             </List>

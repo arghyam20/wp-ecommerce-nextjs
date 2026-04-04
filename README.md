@@ -6,15 +6,15 @@ A full-stack ecommerce storefront built with **Next.js 16**, **WooCommerce REST 
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | Next.js 16 (App Router, Turbopack) |
-| Styling | Tailwind CSS v4 + SCSS + MUI v7 |
-| Auth | NextAuth.js v4 (JWT + WooCommerce JWT) |
-| State | Redux Toolkit + Zustand + React Context |
-| Forms | React Hook Form + Joi validation |
-| HTTP | Axios |
-| Backend | WordPress + WooCommerce REST API (wc/v3) |
+| Layer     | Technology                               |
+| --------- | ---------------------------------------- |
+| Framework | Next.js 16 (App Router, Turbopack)       |
+| Styling   | Tailwind CSS v4 + SCSS + MUI v7          |
+| Auth      | NextAuth.js v4 (JWT + WooCommerce JWT)   |
+| State     | Redux Toolkit + Zustand + React Context  |
+| Forms     | React Hook Form + Joi validation         |
+| HTTP      | Axios                                    |
+| Backend   | WordPress + WooCommerce REST API (wc/v3) |
 
 ---
 
@@ -112,18 +112,18 @@ npm run lint:fix   # Run ESLint with auto-fix
 
 ## API Routes
 
-| Method | Route | Description |
-|---|---|---|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/forgot-password` | Send reset email |
-| POST | `/api/auth/reset-password` | Reset password with code |
-| GET/PUT | `/api/user/profile` | Get / update profile |
-| POST | `/api/user/change-password` | Change password |
-| GET | `/api/user/orders` | Get user orders |
-| GET/POST/DELETE | `/api/cart` | Cart operations |
-| POST | `/api/checkout` | Place order |
-| GET | `/api/products` | List products |
-| GET | `/api/products/[slug]` | Get product by slug |
+| Method          | Route                       | Description              |
+| --------------- | --------------------------- | ------------------------ |
+| POST            | `/api/auth/register`        | Register new user        |
+| POST            | `/api/auth/forgot-password` | Send reset email         |
+| POST            | `/api/auth/reset-password`  | Reset password with code |
+| GET/PUT         | `/api/user/profile`         | Get / update profile     |
+| POST            | `/api/user/change-password` | Change password          |
+| GET             | `/api/user/orders`          | Get user orders          |
+| GET/POST/DELETE | `/api/cart`                 | Cart operations          |
+| POST            | `/api/checkout`             | Place order              |
+| GET             | `/api/products`             | List products            |
+| GET             | `/api/products/[slug]`      | Get product by slug      |
 
 ---
 

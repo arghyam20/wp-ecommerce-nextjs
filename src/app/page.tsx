@@ -8,7 +8,8 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'MyStore – Shop Quality Products Online',
-  description: 'Discover amazing products at great prices. Browse our featured collection and shop now.',
+  description:
+    'Discover amazing products at great prices. Browse our featured collection and shop now.',
   openGraph: {
     title: 'MyStore – Shop Quality Products Online',
     description: 'Discover amazing products at great prices.',
@@ -39,7 +40,11 @@ export default async function HomePage() {
               Discover amazing products at great prices
             </Typography>
             <Link href="/products" passHref>
-              <Button variant="contained" size="large" className="bg-white text-blue-600 hover:bg-gray-100">
+              <Button
+                variant="contained"
+                size="large"
+                className="bg-white text-blue-600 hover:bg-gray-100"
+              >
                 Shop Now
               </Button>
             </Link>

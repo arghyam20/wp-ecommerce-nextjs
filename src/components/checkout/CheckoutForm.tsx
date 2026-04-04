@@ -5,8 +5,18 @@ import { joiResolver } from '@hookform/resolvers/joi';
 import { checkoutSchema } from '@/lib/validation/schemas';
 import { CheckoutFormData } from '@/types';
 import {
-  TextField, Button, Grid, Typography, MenuItem, Divider,
-  Alert, Box, Collapse, Checkbox, FormControlLabel, Paper,
+  TextField,
+  Button,
+  Grid,
+  Typography,
+  MenuItem,
+  Divider,
+  Alert,
+  Box,
+  Collapse,
+  Checkbox,
+  FormControlLabel,
+  Paper,
 } from '@mui/material';
 import { useCart } from '@/context/CartContext';
 import { useState, useEffect } from 'react';
@@ -17,18 +27,28 @@ import toast from 'react-hot-toast';
 import Link from 'next/link';
 
 const COUNTRIES = [
-  { code: 'US', name: 'United States' }, { code: 'CA', name: 'Canada' },
-  { code: 'GB', name: 'United Kingdom' }, { code: 'AU', name: 'Australia' },
-  { code: 'DE', name: 'Germany' }, { code: 'FR', name: 'France' },
-  { code: 'IT', name: 'Italy' }, { code: 'ES', name: 'Spain' },
-  { code: 'IN', name: 'India' }, { code: 'BD', name: 'Bangladesh' },
-  { code: 'PK', name: 'Pakistan' }, { code: 'SG', name: 'Singapore' },
+  { code: 'US', name: 'United States' },
+  { code: 'CA', name: 'Canada' },
+  { code: 'GB', name: 'United Kingdom' },
+  { code: 'AU', name: 'Australia' },
+  { code: 'DE', name: 'Germany' },
+  { code: 'FR', name: 'France' },
+  { code: 'IT', name: 'Italy' },
+  { code: 'ES', name: 'Spain' },
+  { code: 'IN', name: 'India' },
+  { code: 'BD', name: 'Bangladesh' },
+  { code: 'PK', name: 'Pakistan' },
+  { code: 'SG', name: 'Singapore' },
   { code: 'AE', name: 'United Arab Emirates' },
 ];
 
 const PAYMENT_METHODS = [
   { value: 'cod', label: 'Cash on Delivery', desc: 'Pay with cash upon delivery.' },
-  { value: 'bank_transfer', label: 'Direct Bank Transfer', desc: 'Make your payment directly into our bank account. Please use your Order ID as the payment reference.' },
+  {
+    value: 'bank_transfer',
+    label: 'Direct Bank Transfer',
+    desc: 'Make your payment directly into our bank account. Please use your Order ID as the payment reference.',
+  },
 ];
 
 export default function CheckoutForm() {
@@ -41,32 +61,44 @@ export default function CheckoutForm() {
   const [orderNote, setOrderNote] = useState('');
   const [coupon, setCoupon] = useState('');
 
-  const { register, handleSubmit, reset, control, formState: { errors } } = useForm<CheckoutFormData>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors },
+  } = useForm<CheckoutFormData>({
     resolver: joiResolver(checkoutSchema),
     defaultValues: { paymentMethod: 'cod', country: 'US' },
   });
 
   useEffect(() => {
     if (status !== 'authenticated') return;
-    axios.get('/api/user/profile').then(({ data }) => {
-      const b = data.billing;
-      reset({
-        firstName: data.firstName ?? '',
-        lastName: data.lastName ?? '',
-        email: data.email ?? '',
-        phone: b?.phone ?? '',
-        address: b?.address1 ?? '',
-        city: b?.city ?? '',
-        state: b?.state ?? '',
-        postcode: b?.postcode ?? '',
-        country: b?.country || 'US',
-        paymentMethod: 'cod',
-      });
-    }).catch(() => {});
+    axios
+      .get('/api/user/profile')
+      .then(({ data }) => {
+        const b = data.billing;
+        reset({
+          firstName: data.firstName ?? '',
+          lastName: data.lastName ?? '',
+          email: data.email ?? '',
+          phone: b?.phone ?? '',
+          address: b?.address1 ?? '',
+          city: b?.city ?? '',
+          state: b?.state ?? '',
+          postcode: b?.postcode ?? '',
+          country: b?.country || 'US',
+          paymentMethod: 'cod',
+        });
+      })
+      .catch(() => {});
   }, [status, reset]);
 
   const onSubmit = async (data: CheckoutFormData) => {
-    if (!cart || cart.items.length === 0) { toast.error('Your cart is empty'); return; }
+    if (!cart || cart.items.length === 0) {
+      toast.error('Your cart is empty');
+      return;
+    }
     setLoading(true);
     try {
       const { data: res } = await axios.post('/api/checkout', {
@@ -92,59 +124,126 @@ export default function CheckoutForm() {
       {!session && (
         <Alert severity="info" sx={{ mb: 3 }}>
           Returning customer?{' '}
-          <Link href="/login?callbackUrl=/checkout" style={{ fontWeight: 600 }}>Click here to login</Link>
+          <Link href="/login?callbackUrl=/checkout" style={{ fontWeight: 600 }}>
+            Click here to login
+          </Link>
         </Alert>
       )}
 
       {/* Billing Details */}
-      <Typography variant="h6" fontWeight="bold" mb={2}>Billing Details</Typography>
+      <Typography variant="h6" fontWeight="bold" mb={2}>
+        Billing Details
+      </Typography>
       <Grid container spacing={2}>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField fullWidth label="First Name *" {...register('firstName')}
-            error={!!errors.firstName} helperText={errors.firstName?.message} />
+          <TextField
+            fullWidth
+            label="First Name *"
+            {...register('firstName')}
+            error={!!errors.firstName}
+            helperText={errors.firstName?.message}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField fullWidth label="Last Name *" {...register('lastName')}
-            error={!!errors.lastName} helperText={errors.lastName?.message} />
+          <TextField
+            fullWidth
+            label="Last Name *"
+            {...register('lastName')}
+            error={!!errors.lastName}
+            helperText={errors.lastName?.message}
+          />
         </Grid>
         <Grid size={12}>
-          <Controller name="country" control={control} render={({ field }) => (
-            <TextField fullWidth select label="Country / Region *" {...field} value={field.value ?? 'US'}
-              error={!!errors.country} helperText={errors.country?.message}>
-              {COUNTRIES.map((c) => <MenuItem key={c.code} value={c.code}>{c.name}</MenuItem>)}
-            </TextField>
-          )} />
+          <Controller
+            name="country"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                fullWidth
+                select
+                label="Country / Region *"
+                {...field}
+                value={field.value ?? 'US'}
+                error={!!errors.country}
+                helperText={errors.country?.message}
+              >
+                {COUNTRIES.map((c) => (
+                  <MenuItem key={c.code} value={c.code}>
+                    {c.name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
         </Grid>
         <Grid size={12}>
-          <TextField fullWidth label="Street Address *" placeholder="House number and street name"
-            {...register('address')} error={!!errors.address} helperText={errors.address?.message} />
+          <TextField
+            fullWidth
+            label="Street Address *"
+            placeholder="House number and street name"
+            {...register('address')}
+            error={!!errors.address}
+            helperText={errors.address?.message}
+          />
         </Grid>
         <Grid size={12}>
-          <TextField fullWidth label="Town / City *" {...register('city')}
-            error={!!errors.city} helperText={errors.city?.message} />
+          <TextField
+            fullWidth
+            label="Town / City *"
+            {...register('city')}
+            error={!!errors.city}
+            helperText={errors.city?.message}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField fullWidth label="State / Province *" {...register('state')}
-            error={!!errors.state} helperText={errors.state?.message} />
+          <TextField
+            fullWidth
+            label="State / Province *"
+            {...register('state')}
+            error={!!errors.state}
+            helperText={errors.state?.message}
+          />
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
-          <TextField fullWidth label="Postcode / ZIP *" {...register('postcode')}
-            error={!!errors.postcode} helperText={errors.postcode?.message} />
+          <TextField
+            fullWidth
+            label="Postcode / ZIP *"
+            {...register('postcode')}
+            error={!!errors.postcode}
+            helperText={errors.postcode?.message}
+          />
         </Grid>
         <Grid size={12}>
-          <TextField fullWidth label="Phone *" type="tel" {...register('phone')}
-            error={!!errors.phone} helperText={errors.phone?.message} />
+          <TextField
+            fullWidth
+            label="Phone *"
+            type="tel"
+            {...register('phone')}
+            error={!!errors.phone}
+            helperText={errors.phone?.message}
+          />
         </Grid>
         <Grid size={12}>
-          <TextField fullWidth label="Email Address *" type="email" {...register('email')}
-            error={!!errors.email} helperText={errors.email?.message} />
+          <TextField
+            fullWidth
+            label="Email Address *"
+            type="email"
+            {...register('email')}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+          />
         </Grid>
       </Grid>
 
       {/* Ship to different address */}
       <Box sx={{ mt: 3, mb: 1 }}>
         <FormControlLabel
-          control={<Checkbox checked={shipToDifferent} onChange={(e) => setShipToDifferent(e.target.checked)} />}
+          control={
+            <Checkbox
+              checked={shipToDifferent}
+              onChange={(e) => setShipToDifferent(e.target.checked)}
+            />
+          }
           label={<Typography fontWeight="bold">Ship to a different address?</Typography>}
         />
       </Box>
@@ -159,11 +258,20 @@ export default function CheckoutForm() {
             </Grid>
             <Grid size={12}>
               <TextField fullWidth size="small" select label="Country / Region" defaultValue="US">
-                {COUNTRIES.map((c) => <MenuItem key={c.code} value={c.code}>{c.name}</MenuItem>)}
+                {COUNTRIES.map((c) => (
+                  <MenuItem key={c.code} value={c.code}>
+                    {c.name}
+                  </MenuItem>
+                ))}
               </TextField>
             </Grid>
             <Grid size={12}>
-              <TextField fullWidth size="small" label="Street Address" placeholder="House number and street name" />
+              <TextField
+                fullWidth
+                size="small"
+                label="Street Address"
+                placeholder="House number and street name"
+              />
             </Grid>
             <Grid size={12}>
               <TextField fullWidth size="small" label="Town / City" />
@@ -180,7 +288,9 @@ export default function CheckoutForm() {
 
       {/* Order Notes */}
       <TextField
-        fullWidth multiline rows={3}
+        fullWidth
+        multiline
+        rows={3}
         label="Order Notes (optional)"
         placeholder="Notes about your order, e.g. special notes for delivery."
         value={orderNote}
@@ -191,7 +301,9 @@ export default function CheckoutForm() {
       {/* Coupon */}
       <Box sx={{ display: 'flex', gap: 1, mt: 3 }}>
         <TextField
-          size="small" label="Coupon code" value={coupon}
+          size="small"
+          label="Coupon code"
+          value={coupon}
           onChange={(e) => setCoupon(e.target.value)}
           sx={{ flexGrow: 1 }}
         />
@@ -202,18 +314,36 @@ export default function CheckoutForm() {
 
       {/* Payment */}
       <Divider sx={{ my: 4 }} />
-      <Typography variant="h6" fontWeight="bold" mb={2}>Payment</Typography>
-      <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'hidden', mb: 2 }}>
+      <Typography variant="h6" fontWeight="bold" mb={2}>
+        Payment
+      </Typography>
+      <Box
+        sx={{
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 1,
+          overflow: 'hidden',
+          mb: 2,
+        }}
+      >
         {PAYMENT_METHODS.map((method, i) => (
           <Box key={method.value}>
             {i > 0 && <Divider />}
             <Box
-              sx={{ p: 2, cursor: 'pointer', bgcolor: selectedPayment === method.value ? 'primary.50' : 'background.paper' }}
+              sx={{
+                p: 2,
+                cursor: 'pointer',
+                bgcolor: selectedPayment === method.value ? 'primary.50' : 'background.paper',
+              }}
               onClick={() => setSelectedPayment(method.value)}
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <input type="radio" checked={selectedPayment === method.value}
-                  onChange={() => setSelectedPayment(method.value)} style={{ accentColor: '#1976d2', width: 16, height: 16 }} />
+                <input
+                  type="radio"
+                  checked={selectedPayment === method.value}
+                  onChange={() => setSelectedPayment(method.value)}
+                  style={{ accentColor: '#1976d2', width: 16, height: 16 }}
+                />
                 <Typography fontWeight={selectedPayment === method.value ? 'bold' : 'normal'}>
                   {method.label}
                 </Typography>
@@ -229,10 +359,18 @@ export default function CheckoutForm() {
       </Box>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Your personal data will be used to process your order and support your experience throughout this website.
+        Your personal data will be used to process your order and support your experience throughout
+        this website.
       </Typography>
 
-      <Button type="submit" variant="contained" size="large" fullWidth disabled={loading} sx={{ py: 1.5, fontSize: 16 }}>
+      <Button
+        type="submit"
+        variant="contained"
+        size="large"
+        fullWidth
+        disabled={loading}
+        sx={{ py: 1.5, fontSize: 16 }}
+      >
         {loading ? 'Placing Order...' : 'Place Order'}
       </Button>
     </form>

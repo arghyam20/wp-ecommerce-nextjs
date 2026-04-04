@@ -1,6 +1,9 @@
 import Joi from 'joi';
 
-export const validate = <T>(schema: Joi.ObjectSchema, data: T): { error?: Record<string, string>; value: T } => {
+export const validate = <T>(
+  schema: Joi.ObjectSchema,
+  data: T
+): { error?: Record<string, string>; value: T } => {
   const result = schema.validate(data, { abortEarly: false, stripUnknown: true });
   if (result.error) {
     const errors = result.error.details.reduce((acc: Record<string, string>, curr) => {

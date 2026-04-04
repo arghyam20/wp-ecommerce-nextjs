@@ -7,8 +7,17 @@ import { initWishlist, toggleWishlist } from '@/store/wishlistSlice';
 import { useCart } from '@/context/CartContext';
 import Layout from '@/components/common/Layout';
 import {
-  Container, Typography, Grid, Card, CardMedia, CardContent,
-  CardActions, Button, Box, Alert, IconButton,
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Button,
+  Box,
+  Alert,
+  IconButton,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -20,12 +29,17 @@ export default function WishlistClient() {
   const items = useSelector((state: RootState) => state.wishlist.items);
   const { addToCart } = useCart();
 
-  useEffect(() => { dispatch(initWishlist()); }, [dispatch]);
+  useEffect(() => {
+    dispatch(initWishlist());
+  }, [dispatch]);
 
-  const handleAddToCart = async (product: typeof items[0]) => {
+  const handleAddToCart = async (product: (typeof items)[0]) => {
     try {
       await addToCart(
-        product.id, 1, undefined, product.name,
+        product.id,
+        1,
+        undefined,
+        product.name,
         product.sale_price || product.price,
         product.images[0] ? { src: product.images[0].src, alt: product.images[0].alt } : undefined
       );
@@ -38,11 +52,15 @@ export default function WishlistClient() {
   return (
     <Layout>
       <Container maxWidth="lg" sx={{ py: 6 }}>
-        <Typography variant="h4" component="h1" fontWeight="bold" mb={4}>Wishlist</Typography>
+        <Typography variant="h4" component="h1" fontWeight="bold" mb={4}>
+          Wishlist
+        </Typography>
         {items.length === 0 ? (
           <Alert severity="info" sx={{ mb: 3 }}>
             Your wishlist is empty.{' '}
-            <Link href="/products"><strong>Browse products</strong></Link>
+            <Link href="/products">
+              <strong>Browse products</strong>
+            </Link>
           </Alert>
         ) : (
           <Grid container spacing={3}>
@@ -59,7 +77,9 @@ export default function WishlistClient() {
                     />
                   </Link>
                   <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="subtitle1" fontWeight="medium" gutterBottom>{product.name}</Typography>
+                    <Typography variant="subtitle1" fontWeight="medium" gutterBottom>
+                      {product.name}
+                    </Typography>
                     <Typography variant="h6" color="primary">
                       ${parseFloat(product.sale_price || product.price).toFixed(2)}
                     </Typography>
@@ -74,7 +94,11 @@ export default function WishlistClient() {
                     >
                       Add to Cart
                     </Button>
-                    <IconButton size="small" color="error" onClick={() => dispatch(toggleWishlist(product))}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => dispatch(toggleWishlist(product))}
+                    >
                       <DeleteIcon />
                     </IconButton>
                   </CardActions>

@@ -23,19 +23,33 @@ export const useCart = () => {
 
   useEffect(() => {
     if (!fetched) dispatch(fetchCart());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return {
     cart,
     loading,
-    addToCart: (productId: number, quantity: number, variation?: Record<string, string>, name?: string, price?: string, image?: { src: string; alt: string }) =>
-      dispatch(addToCartThunk({ productId, quantity, variation, name: name ?? '', price: price ?? '0', image })).unwrap(),
-    removeFromCart: (itemKey: string) =>
-      dispatch(removeFromCartThunk(itemKey)).unwrap(),
+    addToCart: (
+      productId: number,
+      quantity: number,
+      variation?: Record<string, string>,
+      name?: string,
+      price?: string,
+      image?: { src: string; alt: string }
+    ) =>
+      dispatch(
+        addToCartThunk({
+          productId,
+          quantity,
+          variation,
+          name: name ?? '',
+          price: price ?? '0',
+          image,
+        })
+      ).unwrap(),
+    removeFromCart: (itemKey: string) => dispatch(removeFromCartThunk(itemKey)).unwrap(),
     updateQuantity: (itemKey: string, quantity: number) =>
       dispatch(updateQuantityThunk({ itemKey, quantity })).unwrap(),
-    clearCart: () =>
-      dispatch(clearCartThunk()).unwrap(),
+    clearCart: () => dispatch(clearCartThunk()).unwrap(),
   };
 };

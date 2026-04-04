@@ -9,7 +9,8 @@ export const metadata: Metadata = {
     default: 'MyStore – Shop Quality Products Online',
     template: '%s | MyStore',
   },
-  description: 'Discover amazing products at great prices. Fast shipping, 24/7 support, and a seamless shopping experience.',
+  description:
+    'Discover amazing products at great prices. Fast shipping, 24/7 support, and a seamless shopping experience.',
   keywords: ['ecommerce', 'online store', 'shop', 'products'],
   openGraph: {
     type: 'website',

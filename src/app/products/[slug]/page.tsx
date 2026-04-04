@@ -17,7 +17,11 @@ export async function generateStaticParams() {
   }
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const { slug } = await params;
   try {
     const product = await getProductBySlug(slug);
@@ -30,7 +34,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         title: `${product.name} | MyStore`,
         description,
         url: `/products/${slug}`,
-        images: product.images[0] ? [{ url: product.images[0].src, alt: product.images[0].alt }] : [],
+        images: product.images[0]
+          ? [{ url: product.images[0].src, alt: product.images[0].alt }]
+          : [],
       },
     };
   } catch {
@@ -57,7 +63,9 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       {related.length > 0 && (
         <Container maxWidth="lg" sx={{ pb: 6 }}>
           <Divider sx={{ mb: 4 }} />
-          <Typography variant="h5" fontWeight="bold" mb={3}>Related Products</Typography>
+          <Typography variant="h5" fontWeight="bold" mb={3}>
+            Related Products
+          </Typography>
           <ProductGrid products={related} />
         </Container>
       )}
