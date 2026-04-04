@@ -1,6 +1,6 @@
 import WooCommerce from "./client";
 import { cache } from "react";
-import { Product, Category } from "@/types";
+import { Product, Category, ProductVariation, ProductReview } from "@/types";
 import {
   PRODUCTS_PER_PAGE,
   CATEGORIES_PER_PAGE,
@@ -103,3 +103,48 @@ export const searchProducts = cache(async (query: string) => {
     throw error;
   }
 });
+
+export const getProductVariations = cache(async (productId: number) => {
+  try {
+    const { data } = await WooCommerce.get(`products/${productId}/variations`, {
+      per_page: 100,
+    });
+    return Array.isArray(data) ? (data as ProductVariation[]) : [];
+  } catch {
+    return [];
+  }
+});
+
+export const getProductReviews = cache(async (productId: number) => {
+  try {
+    const { data } = await WooCommerce.get("products/reviews", {
+      product: [productId],
+      per_page: 10,
+      status: "approved",
+    });
+    return Array.isArray(data) ? (data as ProductReview[]) : [];
+  } catch {
+    return [];
+  }
+});
+
+export const createProductReview = async (review: {
+  product_id: number;
+  review: string;
+  reviewer: string;
+  reviewer_email: string;
+  rating: number;
+}) => {
+  const { data } = await WooCommerce.post("products/reviews", review);
+  return data;
+};
+
+export const validateCoupon = async (code: string) => {
+  try {
+    const { data } = await WooCommerce.get("coupons", { code });
+    if (Array.isArray(data) && data.length > 0) return data[0];
+    return null;
+  } catch {
+    return null;
+  }
+};

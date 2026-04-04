@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { Product } from '@/types';
+import { Product } from "@/types";
 import {
   Container,
   Grid,
@@ -11,20 +11,22 @@ import {
   Chip,
   IconButton,
   Tooltip,
-} from '@mui/material';
-import { useState, useEffect } from 'react';
-import { useCart } from '@/context/CartContext';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState, AppDispatch } from '@/store';
-import { toggleWishlist, initWishlist } from '@/store/wishlistSlice';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import CheckIcon from '@mui/icons-material/Check';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
+  Rating,
+} from "@mui/material";
+import { useState, useEffect } from "react";
+import { useCart } from "@/context/CartContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState, AppDispatch } from "@/store";
+import { toggleWishlist, initWishlist } from "@/store/wishlistSlice";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import CheckIcon from "@mui/icons-material/Check";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import toast from "react-hot-toast";
+import Link from "next/link";
+import ProductReviews from "./ProductReviews";
 
 interface ProductDetailsProps {
   product: Product;
@@ -32,7 +34,9 @@ interface ProductDetailsProps {
 
 export default function ProductDetails({ product }: ProductDetailsProps) {
   const [quantity, setQuantity] = useState(1);
-  const [selectedVariation, setSelectedVariation] = useState<Record<string, string>>({});
+  const [selectedVariation, setSelectedVariation] = useState<
+    Record<string, string>
+  >({});
   const [activeImage, setActiveImage] = useState(0);
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
@@ -46,7 +50,7 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
   }, [dispatch]);
 
   const price = product.sale_price || product.price;
-  const inStock = product.stock_status === 'instock';
+  const inStock = product.stock_status === "instock";
 
   const handleQtyChange = (val: number) => setQuantity(Math.max(1, val));
 
@@ -60,13 +64,15 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         Object.keys(selectedVariation).length ? selectedVariation : undefined,
         product.name,
         price,
-        product.images[0] ? { src: product.images[0].src, alt: product.images[0].alt } : undefined
+        product.images[0]
+          ? { src: product.images[0].src, alt: product.images[0].alt }
+          : undefined,
       );
       toast.success(`"${product.name}" added to cart`);
       setAdded(true);
       setTimeout(() => setAdded(false), 2500);
     } catch {
-      toast.error('Failed to add to cart');
+      toast.error("Failed to add to cart");
     } finally {
       setLoading(false);
     }
@@ -76,14 +82,14 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
     <Container maxWidth="lg" sx={{ py: 6 }}>
       {/* Breadcrumb */}
       <Typography variant="body2" color="text.secondary" mb={3}>
-        <Link href="/" style={{ color: 'inherit' }}>
+        <Link href="/" style={{ color: "inherit" }}>
           Home
         </Link>
-        {' / '}
-        <Link href="/products" style={{ color: 'inherit' }}>
+        {" / "}
+        <Link href="/products" style={{ color: "inherit" }}>
           Products
         </Link>
-        {' / '}
+        {" / "}
         {product.name}
       </Typography>
 
@@ -92,22 +98,27 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
         <Grid size={{ xs: 12, md: 6 }}>
           <Box
             sx={{
-              border: '1px solid',
-              borderColor: 'divider',
+              border: "1px solid",
+              borderColor: "divider",
               borderRadius: 2,
-              overflow: 'hidden',
+              overflow: "hidden",
               mb: 1,
             }}
           >
             <img
-              src={product.images[activeImage]?.src || '/placeholder.jpg'}
+              src={product.images[activeImage]?.src || "/placeholder.jpg"}
               alt={product.images[activeImage]?.alt || product.name}
-              style={{ width: '100%', height: 420, objectFit: 'contain', display: 'block' }}
+              style={{
+                width: "100%",
+                height: 420,
+                objectFit: "contain",
+                display: "block",
+              }}
             />
           </Box>
           {/* Thumbnails */}
           {product.images.length > 1 && (
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+            <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
               {product.images.map((img, i) => (
                 <Box
                   key={img.id}
@@ -115,17 +126,21 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                   sx={{
                     width: 72,
                     height: 72,
-                    cursor: 'pointer',
-                    border: '2px solid',
-                    borderColor: activeImage === i ? 'primary.main' : 'divider',
+                    cursor: "pointer",
+                    border: "2px solid",
+                    borderColor: activeImage === i ? "primary.main" : "divider",
                     borderRadius: 1,
-                    overflow: 'hidden',
+                    overflow: "hidden",
                   }}
                 >
                   <img
                     src={img.src}
                     alt={img.alt}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
                   />
                 </Box>
               ))}
@@ -135,12 +150,17 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
         {/* Info */}
         <Grid size={{ xs: 12, md: 6 }}>
-          <Typography variant="h4" component="h1" fontWeight="bold" gutterBottom>
+          <Typography
+            variant="h4"
+            component="h1"
+            fontWeight="bold"
+            gutterBottom
+          >
             {product.name}
           </Typography>
 
           {/* Price */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
             <Typography variant="h4" color="primary" fontWeight="bold">
               ${parseFloat(price).toFixed(2)}
             </Typography>
@@ -148,26 +168,72 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               <Typography
                 variant="h6"
                 color="text.secondary"
-                sx={{ textDecoration: 'line-through' }}
+                sx={{ textDecoration: "line-through" }}
               >
                 ${parseFloat(product.regular_price).toFixed(2)}
               </Typography>
             )}
-            {product.sale_price && <Chip label="Sale" color="error" size="small" />}
+            {product.sale_price && (
+              <Chip label="Sale" color="error" size="small" />
+            )}
           </Box>
 
+          {/* Rating */}
+          {Number(product.rating_count) > 0 && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+              <Rating
+                value={Number(product.average_rating)}
+                precision={0.5}
+                readOnly
+                size="small"
+              />
+              <Typography variant="body2" color="text.secondary">
+                ({product.rating_count}{" "}
+                {product.rating_count === 1 ? "review" : "reviews"})
+              </Typography>
+            </Box>
+          )}
+
           {/* Stock */}
-          <Chip
-            label={inStock ? 'In Stock' : 'Out of Stock'}
-            color={inStock ? 'success' : 'error'}
-            size="small"
-            sx={{ mb: 2 }}
-          />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
+            <Chip
+              label={
+                product.stock_status === "instock"
+                  ? "In Stock"
+                  : product.stock_status === "onbackorder"
+                    ? "On Backorder"
+                    : "Out of Stock"
+              }
+              color={
+                product.stock_status === "instock"
+                  ? "success"
+                  : product.stock_status === "onbackorder"
+                    ? "warning"
+                    : "error"
+              }
+              size="small"
+            />
+            {product.manage_stock &&
+              product.stock_quantity !== null &&
+              product.stock_quantity <= 5 &&
+              product.stock_quantity > 0 && (
+                <Typography variant="caption" color="warning.main">
+                  Only {product.stock_quantity} left!
+                </Typography>
+              )}
+          </Box>
 
           {/* Short Description */}
           {product.short_description && (
-            <Typography variant="body1" color="text.secondary" mb={2} component="div">
-              <span dangerouslySetInnerHTML={{ __html: product.short_description }} />
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              mb={2}
+              component="div"
+            >
+              <span
+                dangerouslySetInnerHTML={{ __html: product.short_description }}
+              />
             </Typography>
           )}
 
@@ -181,14 +247,21 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
                   <Typography variant="subtitle2" fontWeight="bold" mb={1}>
                     {attr.name}
                   </Typography>
-                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                     {attr.options.map((option) => (
                       <Button
                         key={option}
                         size="small"
-                        variant={selectedVariation[attr.name] === option ? 'contained' : 'outlined'}
+                        variant={
+                          selectedVariation[attr.name] === option
+                            ? "contained"
+                            : "outlined"
+                        }
                         onClick={() =>
-                          setSelectedVariation((prev) => ({ ...prev, [attr.name]: option }))
+                          setSelectedVariation((prev) => ({
+                            ...prev,
+                            [attr.name]: option,
+                          }))
                         }
                         sx={{ minWidth: 48 }}
                       >
@@ -202,14 +275,14 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
           )}
 
           {/* Quantity + Add to Cart + Wishlist */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
             {/* Quantity Stepper */}
             <Box
               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                border: '1px solid',
-                borderColor: 'divider',
+                display: "flex",
+                alignItems: "center",
+                border: "1px solid",
+                borderColor: "divider",
                 borderRadius: 1,
               }}
             >
@@ -220,18 +293,28 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               >
                 <RemoveIcon fontSize="small" />
               </IconButton>
-              <Typography sx={{ px: 2, minWidth: 40, textAlign: 'center', fontWeight: 'bold' }}>
+              <Typography
+                sx={{
+                  px: 2,
+                  minWidth: 40,
+                  textAlign: "center",
+                  fontWeight: "bold",
+                }}
+              >
                 {quantity}
               </Typography>
-              <IconButton size="small" onClick={() => handleQtyChange(quantity + 1)}>
+              <IconButton
+                size="small"
+                onClick={() => handleQtyChange(quantity + 1)}
+              >
                 <AddIcon fontSize="small" />
               </IconButton>
             </Box>
 
             {/* Add to Cart */}
             <Button
-              variant={added ? 'outlined' : 'contained'}
-              color={added ? 'success' : 'primary'}
+              variant={added ? "outlined" : "contained"}
+              color={added ? "success" : "primary"}
               size="large"
               onClick={handleAddToCart}
               disabled={!inStock || loading}
@@ -239,19 +322,21 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               sx={{ flexGrow: 1, py: 1.5 }}
             >
               {!inStock
-                ? 'Out of Stock'
+                ? "Out of Stock"
                 : loading
-                  ? 'Adding...'
+                  ? "Adding..."
                   : added
-                    ? 'Added to Cart!'
-                    : 'Add to Cart'}
+                    ? "Added to Cart!"
+                    : "Add to Cart"}
             </Button>
 
             {/* Wishlist */}
-            <Tooltip title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}>
+            <Tooltip
+              title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+            >
               <IconButton
                 onClick={() => dispatch(toggleWishlist(product))}
-                color={isWishlisted ? 'error' : 'default'}
+                color={isWishlisted ? "error" : "default"}
               >
                 {isWishlisted ? <FavoriteIcon /> : <FavoriteBorderIcon />}
               </IconButton>
@@ -271,8 +356,37 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
 
           {/* Meta */}
           {product.categories?.length > 0 && (
-            <Typography variant="body2" color="text.secondary">
-              Category: {product.categories.map((c) => c.name).join(', ')}
+            <Typography variant="body2" color="text.secondary" mb={0.5}>
+              <strong>Category:</strong>{" "}
+              {product.categories.map((c) => c.name).join(", ")}
+            </Typography>
+          )}
+          {product.tags?.length > 0 && (
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                flexWrap: "wrap",
+                mt: 1,
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                <strong>Tags:</strong>
+              </Typography>
+              {product.tags.map((tag) => (
+                <Chip
+                  key={tag.id}
+                  label={tag.name}
+                  size="small"
+                  variant="outlined"
+                />
+              ))}
+            </Box>
+          )}
+          {product.sku && (
+            <Typography variant="body2" color="text.secondary" mt={0.5}>
+              <strong>SKU:</strong> {product.sku}
             </Typography>
           )}
 
@@ -282,13 +396,23 @@ export default function ProductDetails({ product }: ProductDetailsProps) {
               <Typography variant="subtitle2" fontWeight="bold" mb={1}>
                 Description
               </Typography>
-              <Typography variant="body2" color="text.secondary" component="div">
-                <span dangerouslySetInnerHTML={{ __html: product.description }} />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                component="div"
+              >
+                <span
+                  dangerouslySetInnerHTML={{ __html: product.description }}
+                />
               </Typography>
             </Box>
           )}
         </Grid>
       </Grid>
+
+      {/* Reviews */}
+      <Divider sx={{ mt: 6, mb: 2 }} />
+      <ProductReviews productId={product.id} />
     </Container>
   );
 }

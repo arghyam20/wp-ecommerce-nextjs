@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import Layout from '@/components/common/Layout';
+import Layout from "@/components/common/Layout";
 import {
   Container,
   Typography,
@@ -18,18 +18,49 @@ import {
   TextField,
   Grid,
   Alert,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AddIcon from '@mui/icons-material/Add';
-import RemoveIcon from '@mui/icons-material/Remove';
-import { useCart } from '@/context/CartContext';
-import Link from 'next/link';
-import { useState } from 'react';
-import toast from 'react-hot-toast';
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import { useCart } from "@/context/CartContext";
+import Link from "next/link";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { Coupon } from "@/types";
+import { API_ROUTES } from "@/lib/constants";
 
 export default function CartClient() {
   const { cart, removeFromCart, updateQuantity, clearCart } = useCart();
-  const [coupon, setCoupon] = useState('');
+  const [coupon, setCoupon] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const discount = appliedCoupon
+    ? appliedCoupon.discount_type === "percent"
+      ? (parseFloat(cart?.subtotal || "0") * parseFloat(appliedCoupon.amount)) /
+        100
+      : parseFloat(appliedCoupon.amount)
+    : 0;
+
+  const finalTotal = Math.max(0, parseFloat(cart?.subtotal || "0") - discount);
+
+  const handleApplyCoupon = async () => {
+    if (!coupon.trim()) return;
+    setCouponLoading(true);
+    try {
+      const { data } = await axios.post(
+        API_ROUTES.CART.replace("cart", "coupons"),
+        { code: coupon },
+      );
+      setAppliedCoupon(data);
+      toast.success(`Coupon "${data.code}" applied!`);
+    } catch {
+      toast.error("Invalid or expired coupon code");
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   if (!cart || cart.items.length === 0) {
     return (
@@ -58,7 +89,7 @@ export default function CartClient() {
             <TableContainer component={Paper} elevation={1}>
               <Table>
                 <TableHead>
-                  <TableRow sx={{ bgcolor: 'grey.50' }}>
+                  <TableRow sx={{ bgcolor: "grey.50" }}>
                     <TableCell></TableCell>
                     <TableCell></TableCell>
                     <TableCell>
@@ -95,14 +126,19 @@ export default function CartClient() {
                             style={{
                               width: 56,
                               height: 56,
-                              objectFit: 'cover',
+                              objectFit: "cover",
                               borderRadius: 4,
-                              display: 'block',
+                              display: "block",
                             }}
                           />
                         ) : (
                           <Box
-                            sx={{ width: 56, height: 56, bgcolor: 'grey.100', borderRadius: 1 }}
+                            sx={{
+                              width: 56,
+                              height: 56,
+                              bgcolor: "grey.100",
+                              borderRadius: 1,
+                            }}
                           />
                         )}
                       </TableCell>
@@ -110,13 +146,17 @@ export default function CartClient() {
                         <Typography variant="body2" fontWeight="medium">
                           {item.name}
                         </Typography>
-                        {item.variation && Object.keys(item.variation).length > 0 && (
-                          <Typography variant="caption" color="text.secondary">
-                            {Object.entries(item.variation)
-                              .map(([k, v]) => `${k}: ${v}`)
-                              .join(', ')}
-                          </Typography>
-                        )}
+                        {item.variation &&
+                          Object.keys(item.variation).length > 0 && (
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {Object.entries(item.variation)
+                                .map(([k, v]) => `${k}: ${v}`)
+                                .join(", ")}
+                            </Typography>
+                          )}
                       </TableCell>
                       <TableCell>
                         <Typography variant="body2">
@@ -124,20 +164,32 @@ export default function CartClient() {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 0.5,
+                          }}
+                        >
                           <IconButton
                             size="small"
-                            onClick={() => updateQuantity(item.key, item.quantity - 1)}
+                            onClick={() =>
+                              updateQuantity(item.key, item.quantity - 1)
+                            }
                             disabled={item.quantity <= 1}
                           >
                             <RemoveIcon fontSize="small" />
                           </IconButton>
-                          <Typography sx={{ minWidth: 24, textAlign: 'center' }}>
+                          <Typography
+                            sx={{ minWidth: 24, textAlign: "center" }}
+                          >
                             {item.quantity}
                           </Typography>
                           <IconButton
                             size="small"
-                            onClick={() => updateQuantity(item.key, item.quantity + 1)}
+                            onClick={() =>
+                              updateQuantity(item.key, item.quantity + 1)
+                            }
                           >
                             <AddIcon fontSize="small" />
                           </IconButton>
@@ -157,26 +209,34 @@ export default function CartClient() {
             {/* Coupon + Clear Cart */}
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
                 mt: 2,
-                flexWrap: 'wrap',
+                flexWrap: "wrap",
                 gap: 2,
               }}
             >
-              <Box sx={{ display: 'flex', gap: 1 }}>
+              <Box sx={{ display: "flex", gap: 1 }}>
                 <TextField
                   size="small"
                   placeholder="Coupon code"
                   value={coupon}
                   onChange={(e) => setCoupon(e.target.value)}
                 />
-                <Button variant="outlined" onClick={() => toast('Coupon feature coming soon')}>
-                  Apply Coupon
+                <Button
+                  variant="outlined"
+                  onClick={handleApplyCoupon}
+                  disabled={couponLoading}
+                >
+                  {couponLoading ? "Applying..." : "Apply Coupon"}
                 </Button>
               </Box>
-              <Button variant="outlined" color="error" onClick={() => clearCart()}>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => clearCart()}
+              >
                 Clear Cart
               </Button>
             </Box>
@@ -188,24 +248,48 @@ export default function CartClient() {
               <Typography variant="h6" fontWeight="bold" mb={2}>
                 Cart Totals
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+              >
                 <Typography>Subtotal</Typography>
                 <Typography>${cart.subtotal}</Typography>
               </Box>
+              {appliedCoupon && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
+                  <Typography color="success.main">
+                    Coupon ({appliedCoupon.code})
+                    {appliedCoupon.discount_type === "percent" &&
+                      ` -${appliedCoupon.amount}%`}
+                  </Typography>
+                  <Typography color="success.main">
+                    -${discount.toFixed(2)}
+                  </Typography>
+                </Box>
+              )}
               <Divider sx={{ my: 1.5 }} />
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+              >
                 <Typography>Shipping</Typography>
                 <Typography color="text.secondary" variant="body2">
                   Calculated at checkout
                 </Typography>
               </Box>
               <Divider sx={{ my: 1.5 }} />
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}
+              >
                 <Typography fontWeight="bold" variant="h6">
                   Total
                 </Typography>
                 <Typography fontWeight="bold" variant="h6">
-                  ${cart.total}
+                  ${finalTotal.toFixed(2)}
                 </Typography>
               </Box>
               <Link href="/checkout" passHref>
