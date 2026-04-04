@@ -15,6 +15,13 @@ export default function ThemeRegistry({ children }: { children: React.ReactNode 
           primary: { main: '#1976d2' },
           secondary: { main: '#dc004e' },
         },
+        components: {
+          MuiTextField: {
+            defaultProps: {
+              InputLabelProps: { shrink: true },
+            },
+          },
+        },
       }),
     []
   );
