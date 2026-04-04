@@ -1,46 +1,29 @@
-'use client';
+"use client";
 
-import { Box, Container, Typography, Grid, Divider } from '@mui/material';
-import Link from 'next/link';
-
-const LINKS = {
-  Shop: [
-    { label: 'All Products', href: '/products' },
-    { label: 'Wishlist', href: '/wishlist' },
-    { label: 'Cart', href: '/cart' },
-    { label: 'Checkout', href: '/checkout' },
-  ],
-  'My Account': [
-    { label: 'Dashboard', href: '/dashboard' },
-    { label: 'Orders', href: '/dashboard/orders' },
-    { label: 'Addresses', href: '/dashboard/addresses' },
-    { label: 'Account Details', href: '/dashboard/profile' },
-  ],
-  Information: [
-    { label: 'About Us', href: '/about' },
-    { label: 'Contact Us', href: '/contact' },
-    { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms & Conditions', href: '/terms' },
-  ],
-};
+import { Box, Container, Typography, Grid, Divider } from "@mui/material";
+import Link from "next/link";
+import { SITE_NAME, SITE_DESCRIPTION, FOOTER_LINKS } from "@/lib/constants";
 
 export default function Footer() {
   return (
-    <Box component="footer" sx={{ bgcolor: 'grey.900', color: 'grey.300', mt: 'auto' }}>
+    <Box
+      component="footer"
+      sx={{ bgcolor: "grey.900", color: "grey.300", mt: "auto" }}
+    >
       <Container maxWidth="lg" sx={{ py: 6 }}>
         <Grid container spacing={4}>
           {/* Brand */}
           <Grid size={{ xs: 12, md: 3 }}>
             <Typography variant="h6" fontWeight="bold" color="white" mb={1}>
-              MyStore
+              {SITE_NAME}
             </Typography>
             <Typography variant="body2" color="grey.500">
-              Your one-stop shop for quality products at great prices. Fast shipping, easy returns.
+              {SITE_DESCRIPTION}
             </Typography>
           </Grid>
 
           {/* Link columns */}
-          {Object.entries(LINKS).map(([title, links]) => (
+          {Object.entries(FOOTER_LINKS).map(([title, links]) => (
             <Grid key={title} size={{ xs: 6, md: 3 }}>
               <Typography
                 variant="subtitle2"
@@ -52,13 +35,20 @@ export default function Footer() {
               >
                 {title}
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 {links.map(({ label, href }) => (
-                  <Link key={href} href={href} style={{ textDecoration: 'none' }}>
+                  <Link
+                    key={href}
+                    href={href}
+                    style={{ textDecoration: "none" }}
+                  >
                     <Typography
                       variant="body2"
                       color="grey.400"
-                      sx={{ '&:hover': { color: 'white' }, transition: 'color 0.2s' }}
+                      sx={{
+                        "&:hover": { color: "white" },
+                        transition: "color 0.2s",
+                      }}
                     >
                       {label}
                     </Typography>
@@ -69,10 +59,10 @@ export default function Footer() {
           ))}
         </Grid>
 
-        <Divider sx={{ borderColor: 'grey.700', my: 4 }} />
+        <Divider sx={{ borderColor: "grey.700", my: 4 }} />
         <Typography variant="body2" color="grey.500" textAlign="center">
-          © {new Date().getFullYear()} MyStore. All rights reserved. Built with Next.js &
-          WooCommerce.
+          © {new Date().getFullYear()} {SITE_NAME}. All rights reserved. Built
+          with Next.js & WooCommerce.
         </Typography>
       </Container>
     </Box>

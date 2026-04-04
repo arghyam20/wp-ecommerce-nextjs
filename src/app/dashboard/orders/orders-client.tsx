@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import DashboardLayout from '@/components/common/DashboardLayout';
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import DashboardLayout from "@/components/common/DashboardLayout";
 import {
   Typography,
   Chip,
@@ -16,23 +16,11 @@ import {
   TableHead,
   TableRow,
   Paper,
-} from '@mui/material';
-import { Order } from '@/types';
-import axios from 'axios';
-import Link from 'next/link';
-
-const STATUS_COLOR: Record<
-  string,
-  'default' | 'warning' | 'success' | 'error' | 'info' | 'primary'
-> = {
-  pending: 'warning',
-  processing: 'info',
-  'on-hold': 'default',
-  completed: 'success',
-  cancelled: 'error',
-  refunded: 'default',
-  failed: 'error',
-};
+} from "@mui/material";
+import { Order } from "@/types";
+import axios from "axios";
+import Link from "next/link";
+import { ROUTES, API_ROUTES, ORDER_STATUS_COLORS } from "@/lib/constants";
 
 export default function OrdersClient() {
   const { data: session, status } = useSession();
@@ -41,17 +29,18 @@ export default function OrdersClient() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/login?callbackUrl=/dashboard/orders');
-    if (status === 'authenticated') {
+    if (status === "unauthenticated")
+      router.push(ROUTES.LOGIN_WITH_CALLBACK(ROUTES.DASHBOARD_ORDERS));
+    if (status === "authenticated") {
       axios
-        .get('/api/user/orders')
+        .get(API_ROUTES.USER.ORDERS)
         .then((r) => setOrders(r.data))
         .catch(() => {})
         .finally(() => setLoading(false));
     }
   }, [status, router]);
 
-  if (status === 'loading' || !session) return null;
+  if (status === "loading" || !session) return null;
 
   return (
     <DashboardLayout>
@@ -60,8 +49,8 @@ export default function OrdersClient() {
       </Typography>
       {!loading && orders.length === 0 ? (
         <Alert severity="info" sx={{ mb: 2 }}>
-          No orders have been made yet.{' '}
-          <Link href="/products">
+          No orders have been made yet.{" "}
+          <Link href={ROUTES.PRODUCTS}>
             <strong>Browse products</strong>
           </Link>
         </Alert>
@@ -69,7 +58,7 @@ export default function OrdersClient() {
         <TableContainer component={Paper} elevation={1}>
           <Table>
             <TableHead>
-              <TableRow sx={{ bgcolor: 'grey.50' }}>
+              <TableRow sx={{ bgcolor: "grey.50" }}>
                 <TableCell>
                   <Typography variant="body2" fontWeight="bold">
                     Order
@@ -107,31 +96,35 @@ export default function OrdersClient() {
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {new Date(order.date_created).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      {new Date(order.date_created).toLocaleDateString(
+                        "en-US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        },
+                      )}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Chip
                       label={
                         order.status.charAt(0).toUpperCase() +
-                        order.status.slice(1).replace('-', ' ')
+                        order.status.slice(1).replace("-", " ")
                       }
-                      color={STATUS_COLOR[order.status] ?? 'default'}
+                      color={ORDER_STATUS_COLORS[order.status] ?? "default"}
                       size="small"
                     />
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2">
-                      {order.currency} {order.total} for{' '}
-                      {order.line_items.reduce((s, i) => s + i.quantity, 0)} item(s)
+                      {order.currency} {order.total} for{" "}
+                      {order.line_items.reduce((s, i) => s + i.quantity, 0)}{" "}
+                      item(s)
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Link href={`/dashboard/orders/${order.id}`} passHref>
+                    <Link href={ROUTES.DASHBOARD_ORDER(order.id)} passHref>
                       <Button size="small" variant="outlined">
                         View
                       </Button>

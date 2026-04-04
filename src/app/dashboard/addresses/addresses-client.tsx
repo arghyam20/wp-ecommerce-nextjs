@@ -1,26 +1,24 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import DashboardLayout from '@/components/common/DashboardLayout';
-import { Typography, TextField, Button, Box, Grid, MenuItem, Paper } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
-import { User } from '@/types';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import DashboardLayout from "@/components/common/DashboardLayout";
+import {
+  Typography,
+  TextField,
+  Button,
+  Box,
+  Grid,
+  MenuItem,
+  Paper,
+} from "@mui/material";
+import { useForm, Controller } from "react-hook-form";
+import { User } from "@/types";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-const COUNTRIES = [
-  { code: 'US', name: 'United States' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'AU', name: 'Australia' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'FR', name: 'France' },
-  { code: 'IT', name: 'Italy' },
-  { code: 'ES', name: 'Spain' },
-  { code: 'IN', name: 'India' },
-];
+import { COUNTRIES } from "@/lib/constants";
 
 interface AddressForm {
   billing: {
@@ -47,12 +45,12 @@ function AddressFields({
   control,
   register,
 }: {
-  prefix: 'billing' | 'shipping';
-  control: ReturnType<typeof useForm<AddressForm>>['control'];
-  register: ReturnType<typeof useForm<AddressForm>>['register'];
+  prefix: "billing" | "shipping";
+  control: ReturnType<typeof useForm<AddressForm>>["control"];
+  register: ReturnType<typeof useForm<AddressForm>>["register"];
 }) {
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
       <TextField
         fullWidth
         size="small"
@@ -66,8 +64,18 @@ function AddressFields({
         label="Apartment, suite, unit, etc. (optional)"
         {...register(`${prefix}.address2`)}
       />
-      <TextField fullWidth size="small" label="Town / City" {...register(`${prefix}.city`)} />
-      <TextField fullWidth size="small" label="State / County" {...register(`${prefix}.state`)} />
+      <TextField
+        fullWidth
+        size="small"
+        label="Town / City"
+        {...register(`${prefix}.city`)}
+      />
+      <TextField
+        fullWidth
+        size="small"
+        label="State / County"
+        {...register(`${prefix}.state`)}
+      />
       <TextField
         fullWidth
         size="small"
@@ -84,7 +92,7 @@ function AddressFields({
             select
             label="Country / Region"
             {...field}
-            value={field.value ?? ''}
+            value={field.value ?? ""}
           >
             <MenuItem value="">
               <em>Select a country</em>
@@ -97,8 +105,14 @@ function AddressFields({
           </TextField>
         )}
       />
-      {prefix === 'billing' && (
-        <TextField fullWidth size="small" label="Phone" type="tel" {...register('billing.phone')} />
+      {prefix === "billing" && (
+        <TextField
+          fullWidth
+          size="small"
+          label="Phone"
+          type="tel"
+          {...register("billing.phone")}
+        />
       )}
     </Box>
   );
@@ -112,42 +126,50 @@ export default function AddressesClient() {
   const { register, handleSubmit, reset, control } = useForm<AddressForm>({
     defaultValues: {
       billing: {
-        address1: '',
-        address2: '',
-        city: '',
-        state: '',
-        postcode: '',
-        country: '',
-        phone: '',
+        address1: "",
+        address2: "",
+        city: "",
+        state: "",
+        postcode: "",
+        country: "",
+        phone: "",
       },
-      shipping: { address1: '', address2: '', city: '', state: '', postcode: '', country: '' },
+      shipping: {
+        address1: "",
+        address2: "",
+        city: "",
+        state: "",
+        postcode: "",
+        country: "",
+      },
     },
   });
 
   useEffect(() => {
-    if (status === 'unauthenticated') router.push('/login?callbackUrl=/dashboard/addresses');
-    if (status === 'authenticated') {
+    if (status === "unauthenticated")
+      router.push("/login?callbackUrl=/dashboard/addresses");
+    if (status === "authenticated") {
       axios
-        .get('/api/user/profile')
+        .get("/api/user/profile")
         .then((r) => {
           const user: User = r.data;
           reset({
             billing: user.billing ?? {
-              address1: '',
-              address2: '',
-              city: '',
-              state: '',
-              postcode: '',
-              country: '',
-              phone: '',
+              address1: "",
+              address2: "",
+              city: "",
+              state: "",
+              postcode: "",
+              country: "",
+              phone: "",
             },
             shipping: user.shipping ?? {
-              address1: '',
-              address2: '',
-              city: '',
-              state: '',
-              postcode: '',
-              country: '',
+              address1: "",
+              address2: "",
+              city: "",
+              state: "",
+              postcode: "",
+              country: "",
             },
           });
         })
@@ -158,16 +180,16 @@ export default function AddressesClient() {
   const onSubmit = async (data: AddressForm) => {
     setLoading(true);
     try {
-      await axios.put('/api/user/address', data);
-      toast.success('Addresses saved successfully.');
+      await axios.put("/api/user/address", data);
+      toast.success("Addresses saved successfully.");
     } catch {
-      toast.error('Failed to save addresses.');
+      toast.error("Failed to save addresses.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (status === 'loading' || !session) return null;
+  if (status === "loading" || !session) return null;
 
   return (
     <DashboardLayout>
@@ -185,7 +207,11 @@ export default function AddressesClient() {
               <Typography variant="h6" fontWeight="bold" mb={2}>
                 Billing Address
               </Typography>
-              <AddressFields prefix="billing" control={control} register={register} />
+              <AddressFields
+                prefix="billing"
+                control={control}
+                register={register}
+              />
             </Paper>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -193,12 +219,21 @@ export default function AddressesClient() {
               <Typography variant="h6" fontWeight="bold" mb={2}>
                 Shipping Address
               </Typography>
-              <AddressFields prefix="shipping" control={control} register={register} />
+              <AddressFields
+                prefix="shipping"
+                control={control}
+                register={register}
+              />
             </Paper>
           </Grid>
         </Grid>
-        <Button type="submit" variant="contained" disabled={loading} sx={{ mt: 3, px: 4 }}>
-          {loading ? 'Saving...' : 'Save Addresses'}
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={loading}
+          sx={{ mt: 3, px: 4 }}
+        >
+          {loading ? "Saving..." : "Save Addresses"}
         </Button>
       </form>
     </DashboardLayout>

@@ -1,19 +1,20 @@
-import type { Metadata } from 'next';
-import Layout from '@/components/common/Layout';
-import ProductGrid from '@/components/products/ProductGrid';
-import { getProducts } from '@/lib/woocommerce/products';
-import { Product } from '@/types';
-import { Typography, Container, Button } from '@mui/material';
-import Link from 'next/link';
+import type { Metadata } from "next";
+import Layout from "@/components/common/Layout";
+import ProductGrid from "@/components/products/ProductGrid";
+import { getProducts } from "@/lib/woocommerce/products";
+import { Product } from "@/types";
+import { SITE_NAME } from '@/lib/constants';
+import { Typography, Container, Button } from "@mui/material";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'MyStore – Shop Quality Products Online',
+  title: `${SITE_NAME} – Shop Quality Products Online`,
   description:
-    'Discover amazing products at great prices. Browse our featured collection and shop now.',
+    "Discover amazing products at great prices. Browse our featured collection and shop now.",
   openGraph: {
-    title: 'MyStore – Shop Quality Products Online',
-    description: 'Discover amazing products at great prices.',
-    url: '/',
+    title: `${SITE_NAME} – Shop Quality Products Online`,
+    description: "Discover amazing products at great prices.",
+    url: "/",
   },
 };
 
@@ -33,7 +34,12 @@ export default async function HomePage() {
       <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20">
         <Container maxWidth="lg">
           <div className="text-center">
-            <Typography variant="h2" component="h1" gutterBottom className="font-bold">
+            <Typography
+              variant="h2"
+              component="h1"
+              gutterBottom
+              className="font-bold"
+            >
               Welcome to Our Store
             </Typography>
             <Typography variant="h5" gutterBottom className="mb-8">
@@ -54,7 +60,12 @@ export default async function HomePage() {
 
       <section className="py-16">
         <Container maxWidth="lg">
-          <Typography variant="h3" component="h2" gutterBottom className="text-center mb-12">
+          <Typography
+            variant="h3"
+            component="h2"
+            gutterBottom
+            className="text-center mb-12"
+          >
             Featured Products
           </Typography>
           <ProductGrid products={featuredProducts} />

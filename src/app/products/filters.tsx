@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useTransition } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useTransition } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Box,
   TextField,
@@ -11,21 +11,18 @@ import {
   InputLabel,
   InputAdornment,
   CircularProgress,
-} from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
+} from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
-const SORT_OPTIONS = [
-  { label: 'Newest', orderby: 'date', order: 'desc' },
-  { label: 'Oldest', orderby: 'date', order: 'asc' },
-  { label: 'Price: Low to High', orderby: 'price', order: 'asc' },
-  { label: 'Price: High to Low', orderby: 'price', order: 'desc' },
-  { label: 'Name: A–Z', orderby: 'title', order: 'asc' },
-  { label: 'Name: Z–A', orderby: 'title', order: 'desc' },
-  { label: 'Popularity', orderby: 'popularity', order: 'desc' },
-  { label: 'Rating', orderby: 'rating', order: 'desc' },
-];
+import { SORT_OPTIONS } from "@/lib/constants";
 
-export default function ProductsFilters({ search, sort }: { search: string; sort: string }) {
+export default function ProductsFilters({
+  search,
+  sort,
+}: {
+  search: string;
+  sort: string;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -37,7 +34,7 @@ export default function ProductsFilters({ search, sort }: { search: string; sort
       if (val) params.set(key, val);
       else params.delete(key);
     });
-    params.delete('page'); // reset to page 1 on filter change
+    params.delete("page"); // reset to page 1 on filter change
     startTransition(() => router.push(`/products?${params.toString()}`));
   };
 
@@ -47,8 +44,20 @@ export default function ProductsFilters({ search, sort }: { search: string; sort
   };
 
   return (
-    <Box sx={{ display: 'flex', gap: 2, mb: 4, flexWrap: 'wrap', alignItems: 'center' }}>
-      <Box component="form" onSubmit={handleSearchSubmit} sx={{ flexGrow: 1, minWidth: 220 }}>
+    <Box
+      sx={{
+        display: "flex",
+        gap: 2,
+        mb: 4,
+        flexWrap: "wrap",
+        alignItems: "center",
+      }}
+    >
+      <Box
+        component="form"
+        onSubmit={handleSearchSubmit}
+        sx={{ flexGrow: 1, minWidth: 220 }}
+      >
         <TextField
           fullWidth
           size="small"
@@ -60,7 +69,11 @@ export default function ProductsFilters({ search, sort }: { search: string; sort
             input: {
               startAdornment: (
                 <InputAdornment position="start">
-                  {isPending ? <CircularProgress size={16} /> : <SearchIcon fontSize="small" />}
+                  {isPending ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    <SearchIcon fontSize="small" />
+                  )}
                 </InputAdornment>
               ),
             },
@@ -76,7 +89,7 @@ export default function ProductsFilters({ search, sort }: { search: string; sort
           onChange={(e) => updateParams({ sort: e.target.value })}
         >
           {SORT_OPTIONS.map((opt) => (
-            <MenuItem key={`${opt.orderby}-${opt.order}`} value={`${opt.orderby}-${opt.order}`}>
+            <MenuItem key={opt.value} value={opt.value}>
               {opt.label}
             </MenuItem>
           ))}

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useForm, Controller } from 'react-hook-form';
-import { joiResolver } from '@hookform/resolvers/joi';
-import { checkoutSchema } from '@/lib/validation/schemas';
-import { CheckoutFormData } from '@/types';
+import { useForm, Controller } from "react-hook-form";
+import { joiResolver } from "@hookform/resolvers/joi";
+import { checkoutSchema } from "@/lib/validation/schemas";
+import { CheckoutFormData } from "@/types";
 import {
   TextField,
   Button,
@@ -17,49 +17,26 @@ import {
   Checkbox,
   FormControlLabel,
   Paper,
-} from '@mui/material';
-import { useCart } from '@/context/CartContext';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
+} from "@mui/material";
+import { useCart } from "@/context/CartContext";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import toast from "react-hot-toast";
+import Link from "next/link";
 
-const COUNTRIES = [
-  { code: 'US', name: 'United States' },
-  { code: 'CA', name: 'Canada' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'AU', name: 'Australia' },
-  { code: 'DE', name: 'Germany' },
-  { code: 'FR', name: 'France' },
-  { code: 'IT', name: 'Italy' },
-  { code: 'ES', name: 'Spain' },
-  { code: 'IN', name: 'India' },
-  { code: 'BD', name: 'Bangladesh' },
-  { code: 'PK', name: 'Pakistan' },
-  { code: 'SG', name: 'Singapore' },
-  { code: 'AE', name: 'United Arab Emirates' },
-];
-
-const PAYMENT_METHODS = [
-  { value: 'cod', label: 'Cash on Delivery', desc: 'Pay with cash upon delivery.' },
-  {
-    value: 'bank_transfer',
-    label: 'Direct Bank Transfer',
-    desc: 'Make your payment directly into our bank account. Please use your Order ID as the payment reference.',
-  },
-];
+import { COUNTRIES, PAYMENT_METHODS } from "@/lib/constants";
 
 export default function CheckoutForm() {
   const { cart, clearCart } = useCart();
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState('cod');
+  const [selectedPayment, setSelectedPayment] = useState("cod");
   const [shipToDifferent, setShipToDifferent] = useState(false);
-  const [orderNote, setOrderNote] = useState('');
-  const [coupon, setCoupon] = useState('');
+  const [orderNote, setOrderNote] = useState("");
+  const [coupon, setCoupon] = useState("");
 
   const {
     register,
@@ -69,26 +46,26 @@ export default function CheckoutForm() {
     formState: { errors },
   } = useForm<CheckoutFormData>({
     resolver: joiResolver(checkoutSchema),
-    defaultValues: { paymentMethod: 'cod', country: 'US' },
+    defaultValues: { paymentMethod: "cod", country: "US" },
   });
 
   useEffect(() => {
-    if (status !== 'authenticated') return;
+    if (status !== "authenticated") return;
     axios
-      .get('/api/user/profile')
+      .get("/api/user/profile")
       .then(({ data }) => {
         const b = data.billing;
         reset({
-          firstName: data.firstName ?? '',
-          lastName: data.lastName ?? '',
-          email: data.email ?? '',
-          phone: b?.phone ?? '',
-          address: b?.address1 ?? '',
-          city: b?.city ?? '',
-          state: b?.state ?? '',
-          postcode: b?.postcode ?? '',
-          country: b?.country || 'US',
-          paymentMethod: 'cod',
+          firstName: data.firstName ?? "",
+          lastName: data.lastName ?? "",
+          email: data.email ?? "",
+          phone: b?.phone ?? "",
+          address: b?.address1 ?? "",
+          city: b?.city ?? "",
+          state: b?.state ?? "",
+          postcode: b?.postcode ?? "",
+          country: b?.country || "US",
+          paymentMethod: "cod",
         });
       })
       .catch(() => {});
@@ -96,23 +73,24 @@ export default function CheckoutForm() {
 
   const onSubmit = async (data: CheckoutFormData) => {
     if (!cart || cart.items.length === 0) {
-      toast.error('Your cart is empty');
+      toast.error("Your cart is empty");
       return;
     }
     setLoading(true);
     try {
-      const { data: res } = await axios.post('/api/checkout', {
+      const { data: res } = await axios.post("/api/checkout", {
         ...data,
         paymentMethod: selectedPayment,
         orderNote,
         items: cart.items,
       });
       await clearCart();
-      toast.success('Order placed successfully!');
+      toast.success("Order placed successfully!");
       router.push(`/order-confirmation?order=${res.orderNumber}`);
     } catch (error) {
-      const msg = (error as { response?: { data?: { message?: string } } }).response?.data?.message;
-      toast.error(msg || 'Failed to place order. Please try again.');
+      const msg = (error as { response?: { data?: { message?: string } } })
+        .response?.data?.message;
+      toast.error(msg || "Failed to place order. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -123,7 +101,7 @@ export default function CheckoutForm() {
       {/* Guest notice */}
       {!session && (
         <Alert severity="info" sx={{ mb: 3 }}>
-          Returning customer?{' '}
+          Returning customer?{" "}
           <Link href="/login?callbackUrl=/checkout" style={{ fontWeight: 600 }}>
             Click here to login
           </Link>
@@ -139,7 +117,7 @@ export default function CheckoutForm() {
           <TextField
             fullWidth
             label="First Name *"
-            {...register('firstName')}
+            {...register("firstName")}
             error={!!errors.firstName}
             helperText={errors.firstName?.message}
           />
@@ -148,7 +126,7 @@ export default function CheckoutForm() {
           <TextField
             fullWidth
             label="Last Name *"
-            {...register('lastName')}
+            {...register("lastName")}
             error={!!errors.lastName}
             helperText={errors.lastName?.message}
           />
@@ -163,7 +141,7 @@ export default function CheckoutForm() {
                 select
                 label="Country / Region *"
                 {...field}
-                value={field.value ?? 'US'}
+                value={field.value ?? "US"}
                 error={!!errors.country}
                 helperText={errors.country?.message}
               >
@@ -181,7 +159,7 @@ export default function CheckoutForm() {
             fullWidth
             label="Street Address *"
             placeholder="House number and street name"
-            {...register('address')}
+            {...register("address")}
             error={!!errors.address}
             helperText={errors.address?.message}
           />
@@ -190,7 +168,7 @@ export default function CheckoutForm() {
           <TextField
             fullWidth
             label="Town / City *"
-            {...register('city')}
+            {...register("city")}
             error={!!errors.city}
             helperText={errors.city?.message}
           />
@@ -199,7 +177,7 @@ export default function CheckoutForm() {
           <TextField
             fullWidth
             label="State / Province *"
-            {...register('state')}
+            {...register("state")}
             error={!!errors.state}
             helperText={errors.state?.message}
           />
@@ -208,7 +186,7 @@ export default function CheckoutForm() {
           <TextField
             fullWidth
             label="Postcode / ZIP *"
-            {...register('postcode')}
+            {...register("postcode")}
             error={!!errors.postcode}
             helperText={errors.postcode?.message}
           />
@@ -218,7 +196,7 @@ export default function CheckoutForm() {
             fullWidth
             label="Phone *"
             type="tel"
-            {...register('phone')}
+            {...register("phone")}
             error={!!errors.phone}
             helperText={errors.phone?.message}
           />
@@ -228,7 +206,7 @@ export default function CheckoutForm() {
             fullWidth
             label="Email Address *"
             type="email"
-            {...register('email')}
+            {...register("email")}
             error={!!errors.email}
             helperText={errors.email?.message}
           />
@@ -244,7 +222,11 @@ export default function CheckoutForm() {
               onChange={(e) => setShipToDifferent(e.target.checked)}
             />
           }
-          label={<Typography fontWeight="bold">Ship to a different address?</Typography>}
+          label={
+            <Typography fontWeight="bold">
+              Ship to a different address?
+            </Typography>
+          }
         />
       </Box>
       <Collapse in={shipToDifferent}>
@@ -257,7 +239,13 @@ export default function CheckoutForm() {
               <TextField fullWidth size="small" label="Last Name" />
             </Grid>
             <Grid size={12}>
-              <TextField fullWidth size="small" select label="Country / Region" defaultValue="US">
+              <TextField
+                fullWidth
+                size="small"
+                select
+                label="Country / Region"
+                defaultValue="US"
+              >
                 {COUNTRIES.map((c) => (
                   <MenuItem key={c.code} value={c.code}>
                     {c.name}
@@ -299,7 +287,7 @@ export default function CheckoutForm() {
       />
 
       {/* Coupon */}
-      <Box sx={{ display: 'flex', gap: 1, mt: 3 }}>
+      <Box sx={{ display: "flex", gap: 1, mt: 3 }}>
         <TextField
           size="small"
           label="Coupon code"
@@ -307,7 +295,10 @@ export default function CheckoutForm() {
           onChange={(e) => setCoupon(e.target.value)}
           sx={{ flexGrow: 1 }}
         />
-        <Button variant="outlined" onClick={() => toast('Coupon feature coming soon')}>
+        <Button
+          variant="outlined"
+          onClick={() => toast("Coupon feature coming soon")}
+        >
           Apply Coupon
         </Button>
       </Box>
@@ -319,10 +310,10 @@ export default function CheckoutForm() {
       </Typography>
       <Box
         sx={{
-          border: '1px solid',
-          borderColor: 'divider',
+          border: "1px solid",
+          borderColor: "divider",
           borderRadius: 1,
-          overflow: 'hidden',
+          overflow: "hidden",
           mb: 2,
         }}
       >
@@ -332,19 +323,26 @@ export default function CheckoutForm() {
             <Box
               sx={{
                 p: 2,
-                cursor: 'pointer',
-                bgcolor: selectedPayment === method.value ? 'primary.50' : 'background.paper',
+                cursor: "pointer",
+                bgcolor:
+                  selectedPayment === method.value
+                    ? "primary.50"
+                    : "background.paper",
               }}
               onClick={() => setSelectedPayment(method.value)}
             >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <input
                   type="radio"
                   checked={selectedPayment === method.value}
                   onChange={() => setSelectedPayment(method.value)}
-                  style={{ accentColor: '#1976d2', width: 16, height: 16 }}
+                  style={{ accentColor: "#1976d2", width: 16, height: 16 }}
                 />
-                <Typography fontWeight={selectedPayment === method.value ? 'bold' : 'normal'}>
+                <Typography
+                  fontWeight={
+                    selectedPayment === method.value ? "bold" : "normal"
+                  }
+                >
                   {method.label}
                 </Typography>
               </Box>
@@ -359,8 +357,8 @@ export default function CheckoutForm() {
       </Box>
 
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Your personal data will be used to process your order and support your experience throughout
-        this website.
+        Your personal data will be used to process your order and support your
+        experience throughout this website.
       </Typography>
 
       <Button
@@ -371,7 +369,7 @@ export default function CheckoutForm() {
         disabled={loading}
         sx={{ py: 1.5, fontSize: 16 }}
       >
-        {loading ? 'Placing Order...' : 'Place Order'}
+        {loading ? "Placing Order..." : "Place Order"}
       </Button>
     </form>
   );

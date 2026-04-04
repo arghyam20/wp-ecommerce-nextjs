@@ -1,16 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import WooCommerce from '@/lib/woocommerce/client';
-import { validateAsync } from '@/lib/validation/validate';
-import { checkoutSchema } from '@/lib/validation/schemas';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { CartItem } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import WooCommerce from "@/lib/woocommerce/client";
+import { validateAsync } from "@/lib/validation/validate";
+import { checkoutSchema } from "@/lib/validation/schemas";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { CartItem } from "@/types";
 
-const PAYMENT_TITLES: Record<string, string> = {
-  cod: 'Cash on Delivery',
-  bank_transfer: 'Direct Bank Transfer',
-  card: 'Credit Card',
-};
+import { PAYMENT_TITLES } from "@/lib/constants";
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,25 +15,29 @@ export async function POST(req: NextRequest) {
       items,
       orderNote,
       ...formData
-    }: { items: CartItem[]; orderNote?: string } & Record<string, unknown> = body;
+    }: { items: CartItem[]; orderNote?: string } & Record<string, unknown> =
+      body;
 
     if (!items || items.length === 0) {
-      return NextResponse.json({ message: 'Cart is empty' }, { status: 400 });
+      return NextResponse.json({ message: "Cart is empty" }, { status: 400 });
     }
 
     const validatedData = await validateAsync(checkoutSchema, formData);
 
     // Attach customer ID if logged in
     const session = await getServerSession(authOptions);
-    const customerId = session?.user ? (session.user as { id: string }).id : undefined;
+    const customerId = session?.user
+      ? (session.user as { id: string }).id
+      : undefined;
 
-    const { data } = await WooCommerce.post('orders', {
+    const { data } = await WooCommerce.post("orders", {
       ...(customerId && { customer_id: Number(customerId) }),
       payment_method: validatedData.paymentMethod,
       payment_method_title:
-        PAYMENT_TITLES[validatedData.paymentMethod as string] ?? validatedData.paymentMethod,
+        PAYMENT_TITLES[validatedData.paymentMethod as string] ??
+        validatedData.paymentMethod,
       set_paid: false,
-      status: 'pending',
+      status: "pending",
       ...(orderNote && { customer_note: orderNote }),
       billing: {
         first_name: validatedData.firstName,
@@ -67,9 +67,12 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ orderId: data.id, orderNumber: data.number });
   } catch (error) {
-    if (typeof error === 'object' && error !== null && !('message' in error)) {
+    if (typeof error === "object" && error !== null && !("message" in error)) {
       return NextResponse.json({ errors: error }, { status: 400 });
     }
-    return NextResponse.json({ message: 'Failed to process checkout' }, { status: 500 });
+    return NextResponse.json(
+      { message: "Failed to process checkout" },
+      { status: 500 },
+    );
   }
 }

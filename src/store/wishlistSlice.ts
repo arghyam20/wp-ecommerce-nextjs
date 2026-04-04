@@ -1,27 +1,29 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Product } from '@/types';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Product } from "@/types";
+import { WISHLIST_STORAGE_KEY } from "@/lib/constants";
 
 interface WishlistState {
   items: Product[];
 }
 
-const WISHLIST_KEY = 'wp_wishlist';
+const WISHLIST_KEY = WISHLIST_STORAGE_KEY;
 
 function load(): Product[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === "undefined") return [];
   try {
-    return JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
+    return JSON.parse(localStorage.getItem(WISHLIST_KEY) || "[]");
   } catch {
     return [];
   }
 }
 
 function save(items: Product[]) {
-  if (typeof window !== 'undefined') localStorage.setItem(WISHLIST_KEY, JSON.stringify(items));
+  if (typeof window !== "undefined")
+    localStorage.setItem(WISHLIST_KEY, JSON.stringify(items));
 }
 
 const wishlistSlice = createSlice({
-  name: 'wishlist',
+  name: "wishlist",
   initialState: { items: [] } as WishlistState,
   reducers: {
     initWishlist(state) {

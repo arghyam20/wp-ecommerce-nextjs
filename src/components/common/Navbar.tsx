@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   AppBar,
@@ -12,21 +12,24 @@ import {
   Menu,
   MenuItem,
   Divider,
-} from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import Link from 'next/link';
-import { useCart } from '@/context/CartContext';
-import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/store';
-import MiniCart from './MiniCart';
+} from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import Link from "next/link";
+import { useCart } from "@/context/CartContext";
+import { useSession, signOut } from "next-auth/react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import MiniCart from "./MiniCart";
+import { SITE_NAME, NAV_LINKS } from "@/lib/constants";
 
 export default function Navbar() {
   const { cart } = useCart();
   const { data: session } = useSession();
-  const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
+  const wishlistCount = useSelector(
+    (state: RootState) => state.wishlist.items.length,
+  );
   const itemCount = cart?.item_count ?? 0;
   const [anchor, setAnchor] = useState<null | HTMLElement>(null);
   const [cartOpen, setCartOpen] = useState(false);
@@ -37,19 +40,15 @@ export default function Navbar() {
         <Toolbar>
           <Link
             href="/"
-            style={{ textDecoration: 'none', color: 'inherit', flexGrow: 1 }}
+            style={{ textDecoration: "none", color: "inherit", flexGrow: 1 }}
             prefetch={true}
           >
             <Typography variant="h6" fontWeight="bold">
-              MyStore
+              {SITE_NAME}
             </Typography>
           </Link>
-          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-            {[
-              ['Products', '/products'],
-              ['About', '/about'],
-              ['Contact', '/contact'],
-            ].map(([label, href]) => (
+          <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+            {NAV_LINKS.map(({ label, href }) => (
               <Link key={href} href={href} prefetch={true}>
                 <Button color="inherit">{label}</Button>
               </Link>
@@ -73,17 +72,27 @@ export default function Navbar() {
 
             {session ? (
               <>
-                <IconButton onClick={(e) => setAnchor(e.currentTarget)} sx={{ p: 0, ml: 1 }}>
-                  <Avatar sx={{ width: 34, height: 34, bgcolor: 'secondary.main', fontSize: 16 }}>
-                    {session.user?.name?.[0]?.toUpperCase() || 'U'}
+                <IconButton
+                  onClick={(e) => setAnchor(e.currentTarget)}
+                  sx={{ p: 0, ml: 1 }}
+                >
+                  <Avatar
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      bgcolor: "secondary.main",
+                      fontSize: 16,
+                    }}
+                  >
+                    {session.user?.name?.[0]?.toUpperCase() || "U"}
                   </Avatar>
                 </IconButton>
                 <Menu
                   anchorEl={anchor}
                   open={Boolean(anchor)}
                   onClose={() => setAnchor(null)}
-                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                  transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+                  transformOrigin={{ vertical: "top", horizontal: "right" }}
                 >
                   <MenuItem disabled>
                     <Typography variant="body2" color="text.secondary">
@@ -91,7 +100,11 @@ export default function Navbar() {
                     </Typography>
                   </MenuItem>
                   <Divider />
-                  <MenuItem component={Link} href="/dashboard" onClick={() => setAnchor(null)}>
+                  <MenuItem
+                    component={Link}
+                    href="/dashboard"
+                    onClick={() => setAnchor(null)}
+                  >
                     Dashboard
                   </MenuItem>
                   <MenuItem
@@ -112,7 +125,7 @@ export default function Navbar() {
                   <MenuItem
                     onClick={() => {
                       setAnchor(null);
-                      signOut({ callbackUrl: '/' });
+                      signOut({ callbackUrl: "/" });
                     }}
                   >
                     Sign Out
@@ -124,7 +137,7 @@ export default function Navbar() {
                 <Button
                   color="inherit"
                   variant="outlined"
-                  sx={{ ml: 1, borderColor: 'rgba(255,255,255,0.5)' }}
+                  sx={{ ml: 1, borderColor: "rgba(255,255,255,0.5)" }}
                 >
                   Sign In
                 </Button>
